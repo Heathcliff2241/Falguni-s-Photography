@@ -1,0 +1,19 @@
+[
+  {
+    "id": "test1",
+    "createdAt": "2026-09-09T03:31:34.263Z",
+    "summary": "When is the best time for newborn photos?",
+    "messages": [
+      {
+        "sender": "user",
+        "text": "When is the best time for newborn photos?"
+      },
+      {
+        "id": "bot_1788924694263",
+        "sender": "assistant",
+        "text": "The ideal time for newborn photos is between 5 and 20 days old. During those first couple of weeks, babies tend to sleep more deeply and naturally curl into those gentle, womb-like poses. \n\nOur newborn sessions are kept very calm and unhurried, usually lasting around two hours so there is plenty of time for feeding, cuddles, and settling breaks. \n\nAre you expecting soon, or has your little one already arrived?",
+        "timestamp": "03:31 AM"
+      }
+    ]
+  }
+]

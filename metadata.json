@@ -1,0 +1,6 @@
+{
+  "name": "Falguni's Photography",
+  "description": "Boutique newborn, maternity, family, and cake smash photography studio in Lightsview, Adelaide, South Australia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
