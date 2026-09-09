@@ -68,7 +68,7 @@ export async function askWillow(messages: { sender: string; text: string }[]): P
     }));
 
     const response = await client.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.8-flash',
       contents,
       config: {
         systemInstruction: WILLOW_SYSTEM_INSTRUCTION,
@@ -142,7 +142,7 @@ ${fullText}
 Return ONLY valid raw JSON, without markdown blocks.`;
 
       const result = await client.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3.8-flash',
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         config: {
           temperature: 0.1,

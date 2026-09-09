@@ -1,111 +1,173 @@
 import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface LoadingScreenProps {
   onComplete?: () => void;
 }
 
 export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
-  const [fading, setFading] = useState(false);
-  const [unfolded, setUnfolded] = useState(false);
-  const [hidden, setHidden] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    // Step 1: Start swaddle blanket unfold after 150ms
-    const unfoldTimer = setTimeout(() => {
-      setUnfolded(true);
-    }, 150);
+    // Total display duration ~1.3s for a swift, luxurious entrance
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+    }, 1300);
 
-    // Step 2: Start fade out after 1000ms
-    const fadeTimer = setTimeout(() => {
-      setFading(true);
-    }, 1050);
+    return () => clearTimeout(timer);
+  }, []);
 
-    // Step 3: Complete and remove from DOM after 1200ms
-    const completeTimer = setTimeout(() => {
-      setHidden(true);
-      if (onComplete) onComplete();
-    }, 1250);
-
-    return () => {
-      clearTimeout(unfoldTimer);
-      clearTimeout(fadeTimer);
-      clearTimeout(completeTimer);
-    };
-  }, [onComplete]);
-
-  if (hidden) return null;
+  const handleDismiss = () => {
+    setIsVisible(false);
+  };
 
   return (
-    <div
-      id="loading-screen"
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-[#FAF5EF] transition-opacity duration-300 ease-out ${
-        fading ? 'opacity-0 pointer-events-none' : 'opacity-100'
-      }`}
-    >
-      <div className="flex flex-col items-center justify-center p-6 text-center">
-        {/* Soft swaddle blanket wrap animation */}
-        <div className="relative w-32 h-32 mb-4 flex items-center justify-center">
-          {/* Outer swaddle fold layer */}
-          <svg
-            viewBox="0 0 120 120"
-            className="w-full h-full text-[#EAD3CE] transition-all duration-700 ease-out"
-          >
-            {/* Base swaddle cocoon shape */}
-            <path
-              d="M60 14C38 14 22 34 22 62C22 88 38 106 60 106C82 106 98 88 98 62C98 34 82 14 60 14Z"
-              fill="#FAF5EF"
-              stroke="#9CAA8C"
-              strokeWidth="1.5"
-            />
-            {/* Left wrap fold opening */}
-            <path
-              d={unfolded ? "M28 40C40 45 48 58 46 80" : "M22 40C44 55 60 68 62 88"}
-              stroke="#EAD3CE"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              fill="none"
-              className="transition-all duration-700 ease-out"
-            />
-            {/* Right wrap fold crossing over and gently opening */}
-            <path
-              d={unfolded ? "M92 40C80 45 72 58 74 80" : "M98 40C76 55 58 68 56 88"}
-              stroke="#EAD3CE"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              fill="none"
-              className="transition-all duration-700 ease-out"
-            />
-            {/* Sage wrap tie thread */}
-            <path
-              d={unfolded ? "M42 62C54 60 66 60 78 62" : "M36 68C52 66 68 66 84 68"}
-              stroke="#9CAA8C"
-              strokeWidth="1.2"
-              strokeDasharray="3 3"
-              fill="none"
-              className="transition-all duration-700 ease-out"
-            />
-          </svg>
+    <AnimatePresence onExitComplete={onComplete}>
+      {isVisible && (
+        <motion.div
+          id="loading-screen"
+          role="status"
+          aria-live="polite"
+          aria-label="Loading Falguni's Photography studio"
+          onClick={handleDismiss}
+          initial={{ opacity: 1 }}
+          exit={{ 
+            opacity: 0, 
+            scale: 1.02,
+            transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } 
+          }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#FAF5EF] cursor-pointer select-none overflow-hidden"
+        >
+          {/* Subtle warm ambient glow in background */}
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_rgba(234,211,206,0.25)_0%,_transparent_65%)]" />
 
-          {/* Studio monogram in center */}
-          <div 
-            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-700 ${
-              unfolded ? 'opacity-100 scale-100' : 'opacity-30 scale-95'
-            }`}
-          >
-            <span className="font-display text-2xl text-[#6E4E53] font-medium tracking-wider">
-              F
-            </span>
+          <div className="relative flex flex-col items-center justify-center p-8 max-w-sm text-center z-10">
+            {/* Organic aperture and swaddle cocoon emblem */}
+            <div className="relative w-32 h-32 mb-6 flex items-center justify-center">
+              {/* Outer soft breathing halo ring */}
+              <motion.svg
+                viewBox="0 0 140 140"
+                className="absolute inset-0 w-full h-full"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+              >
+                <circle
+                  cx="70"
+                  cy="70"
+                  r="62"
+                  fill="none"
+                  stroke="#9CAA8C"
+                  strokeWidth="1"
+                  strokeDasharray="4 6"
+                  strokeOpacity="0.45"
+                />
+              </motion.svg>
+
+              {/* Gentle camera lens aperture petals */}
+              <svg
+                viewBox="0 0 120 120"
+                className="w-28 h-28 text-[#EAD3CE] overflow-visible"
+              >
+                {/* 6 Camera Iris / Swaddle Petals that gently rotate and bloom */}
+                {[0, 60, 120, 180, 240, 300].map((angle, i) => (
+                  <motion.path
+                    key={angle}
+                    d="M60 22 C76 22 92 34 88 56 C74 54 62 42 60 22 Z"
+                    fill="#FAF5EF"
+                    stroke="#D8C7AA"
+                    strokeWidth="1.2"
+                    strokeLinejoin="round"
+                    initial={{ scale: 0.8, rotate: angle, opacity: 0 }}
+                    animate={{ 
+                      scale: 1, 
+                      rotate: angle + 25, 
+                      opacity: 0.95 
+                    }}
+                    transition={{
+                      duration: 0.9,
+                      delay: i * 0.05,
+                      ease: [0.16, 1, 0.3, 1]
+                    }}
+                    style={{ originX: "60px", originY: "60px" }}
+                  />
+                ))}
+
+                {/* Delicate inner aperture ring */}
+                <motion.circle
+                  cx="60"
+                  cy="60"
+                  r="26"
+                  fill="#FAF5EF"
+                  stroke="#6E4E53"
+                  strokeWidth="1.4"
+                  strokeOpacity="0.8"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+                />
+
+                {/* Soft accent blush inner circle */}
+                <motion.circle
+                  cx="60"
+                  cy="60"
+                  r="21"
+                  fill="#EAD3CE"
+                  fillOpacity="0.35"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.35, ease: "easeOut" }}
+                />
+              </svg>
+
+              {/* Center Monogram */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.75 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+                className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              >
+                <span className="font-display text-3xl font-medium text-[#6E4E53] tracking-wider select-none">
+                  F
+                </span>
+              </motion.div>
+            </div>
+
+            {/* Studio Identity Revelation */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.35, ease: "easeOut" }}
+              className="space-y-2"
+            >
+              <h2 className="font-display text-2xl text-[#362E2B] font-normal tracking-wide">
+                Falguni&apos;s Photography
+              </h2>
+
+              {/* Delicate expanding divider line */}
+              <motion.div
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{ scaleX: 1, opacity: 1 }}
+                transition={{ duration: 0.7, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="w-16 h-[1.5px] bg-[#9CAA8C]/70 mx-auto rounded-full origin-center"
+              />
+
+              <p className="caption-text text-[#6E4E53] text-xs uppercase tracking-[0.2em] pt-1">
+                Lightsview, Adelaide
+              </p>
+            </motion.div>
+
+            {/* Gentle tap to enter hint */}
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.65 }}
+              transition={{ duration: 0.4, delay: 0.85 }}
+              className="text-[11px] text-[#362E2B]/50 mt-6 tracking-wider font-light"
+            >
+              Unhurried Newborn &amp; Family Studio
+            </motion.span>
           </div>
-        </div>
-
-        {/* Studio title revelation */}
-        <h2 className="font-display text-xl text-[#362E2B] font-medium tracking-wide">
-          Falguni&apos;s Photography
-        </h2>
-        <p className="caption-text text-[#9CAA8C] mt-1">
-          Lightsview, Adelaide
-        </p>
-      </div>
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
