@@ -5,6 +5,7 @@ import { CLIENT_PHOTOS } from '../assets/images';
 import { RibbonDivider } from '../components/RibbonDivider';
 import { FaqAccordion } from '../components/FaqAccordion';
 import { BookingForm } from '../components/BookingForm';
+import { PolaroidPhoto } from '../components/PolaroidPhoto';
 
 interface MaternityPageProps {
   onNavigate: (path: string) => void;
@@ -58,14 +59,15 @@ export const MaternityPage: React.FC<MaternityPageProps> = ({ onNavigate }) => {
             </div>
           </div>
 
-          <div className="lg:col-span-5">
-            <div className="relative rounded-[20px] overflow-hidden shadow-[0_12px_36px_-8px_rgba(110,78,83,0.18)] border border-[#EAD3CE]/80 bg-[#FAF5EF]">
-              <img
-                src={CLIENT_PHOTOS.photo3.src}
-                alt={hero.image_alt_text || CLIENT_PHOTOS.photo3.alt}
-                className="w-full h-auto object-cover aspect-[3/4] transform hover:scale-102 transition-transform duration-700 ease-out"
-              />
-            </div>
+          <div className="lg:col-span-5 flex justify-center">
+            <PolaroidPhoto
+              src={CLIENT_PHOTOS.photo3.src}
+              alt={hero.image_alt_text || CLIENT_PHOTOS.photo3.alt}
+              caption="Natural Studio Light Portrait"
+              subcaption="28 to 34 Weeks"
+              tapeVariant="blush"
+              tapeAngle={-1.5}
+            />
           </div>
         </div>
       </section>

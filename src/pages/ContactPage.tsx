@@ -5,6 +5,7 @@ import { CLIENT_PHOTOS } from '../assets/images';
 import { RibbonDivider } from '../components/RibbonDivider';
 import { FaqAccordion } from '../components/FaqAccordion';
 import { BookingForm } from '../components/BookingForm';
+import { PolaroidPhoto } from '../components/PolaroidPhoto';
 
 interface ContactPageProps {
   onNavigate: (path: string) => void;
@@ -89,18 +90,16 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
               </div>
             </div>
 
-            {/* Reused Photo 3 */}
-            <div className="relative rounded-[20px] overflow-hidden shadow-sm border border-[#EAD3CE] bg-[#FAF5EF]">
-              <img
-                src={CLIENT_PHOTOS.photo3.src}
-                alt={hero.image_alt_text || CLIENT_PHOTOS.photo3.alt}
-                className="w-full h-auto object-cover aspect-[4/3]"
+            {/* Printed Polaroid with Tape */}
+            <div className="flex justify-center pt-2">
+              <PolaroidPhoto
+                src={CLIENT_PHOTOS.maternity.src}
+                alt={hero.image_alt_text || CLIENT_PHOTOS.maternity.alt}
+                caption="Maternity, Newborn & Family"
+                subcaption="Lightsview Studio"
+                tapeVariant="blush"
+                tapeAngle={-1.5}
               />
-              <div className="p-4 bg-[#FAF5EF] text-center border-t border-[#EAD3CE]/50">
-                <span className="caption-text text-[#6E4E53] font-semibold">
-                  Maternity &middot; Newborn &middot; Family
-                </span>
-              </div>
             </div>
           </div>
         </div>

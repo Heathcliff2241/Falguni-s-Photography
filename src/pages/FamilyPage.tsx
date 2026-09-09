@@ -5,6 +5,7 @@ import { CLIENT_PHOTOS } from '../assets/images';
 import { RibbonDivider } from '../components/RibbonDivider';
 import { FaqAccordion } from '../components/FaqAccordion';
 import { BookingForm } from '../components/BookingForm';
+import { PolaroidPhoto } from '../components/PolaroidPhoto';
 
 interface FamilyPageProps {
   onNavigate: (path: string) => void;
@@ -58,14 +59,15 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({ onNavigate }) => {
             </div>
           </div>
 
-          <div className="lg:col-span-5">
-            <div className="relative rounded-[20px] overflow-hidden shadow-[0_12px_36px_-8px_rgba(110,78,83,0.18)] border border-[#EAD3CE]/80 bg-[#FAF5EF]">
-              <img
-                src={CLIENT_PHOTOS.photo4.src}
-                alt={hero.image_alt_text || CLIENT_PHOTOS.photo4.alt}
-                className="w-full h-auto object-cover aspect-[4/3] transform hover:scale-102 transition-transform duration-700 ease-out"
-              />
-            </div>
+          <div className="lg:col-span-5 flex justify-center">
+            <PolaroidPhoto
+              src={CLIENT_PHOTOS.photo4.src}
+              alt={hero.image_alt_text || CLIENT_PHOTOS.photo4.alt}
+              caption="Unhurried Family Laughter"
+              subcaption="Studio & Outdoor"
+              tapeVariant="kraft"
+              tapeAngle={2}
+            />
           </div>
         </div>
       </section>
@@ -134,7 +136,7 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({ onNavigate }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
           <div className="bg-[#FAF5EF] border border-[#EAD3CE] rounded-[20px] p-8 shadow-xs flex flex-col justify-between">
             <p className="font-display text-xl text-[#362E2B]/90 italic leading-relaxed mb-6">
-              &ldquo;The way she worked with our kids was simply amazing — patient, kind, and creative, bringing out their genuine smiles.&rdquo;
+              &ldquo;The way she worked with our kids was simply amazing, patient, kind, and creative, bringing out their genuine smiles.&rdquo;
             </p>
             <div className="pt-4 border-t border-[#EAD3CE]/40">
               <span className="caption-text text-[#6E4E53] font-semibold block">

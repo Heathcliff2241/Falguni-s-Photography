@@ -5,6 +5,7 @@ import { CLIENT_PHOTOS } from '../assets/images';
 import { RibbonDivider } from '../components/RibbonDivider';
 import { FaqAccordion } from '../components/FaqAccordion';
 import { BookingForm } from '../components/BookingForm';
+import { PolaroidPhoto } from '../components/PolaroidPhoto';
 
 interface CakeSmashPageProps {
   onNavigate: (path: string) => void;
@@ -60,14 +61,15 @@ export const CakeSmashPage: React.FC<CakeSmashPageProps> = ({ onNavigate }) => {
             </div>
           </div>
 
-          <div className="lg:col-span-5">
-            <div className="relative rounded-[20px] overflow-hidden shadow-[0_12px_36px_-8px_rgba(110,78,83,0.18)] border border-[#EAD3CE]/80 bg-[#FAF5EF]">
-              <img
-                src={CLIENT_PHOTOS.photo1.src}
-                alt={hero.image_alt_text || "One-year-old baby smashing a birthday cake during a cake smash photography session"}
-                className="w-full h-auto object-cover aspect-[4/3] transform hover:scale-102 transition-transform duration-700 ease-out"
-              />
-            </div>
+          <div className="lg:col-span-5 flex justify-center">
+            <PolaroidPhoto
+              src={CLIENT_PHOTOS.photo2.src}
+              alt={hero.image_alt_text || "One-year-old baby birthday celebration milestone session"}
+              caption="First Birthday Milestone"
+              subcaption="Cake Smash & Bath"
+              tapeVariant="sage"
+              tapeAngle={-1.5}
+            />
           </div>
         </div>
       </section>

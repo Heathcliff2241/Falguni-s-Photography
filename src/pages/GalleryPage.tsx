@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { ArrowRight, MagnifyingGlassPlus, X } from '@phosphor-icons/react';
-import { PAGES_DATA, STUDIO_INFO } from '../data/siteData';
+import { PAGES_DATA } from '../data/siteData';
 import { CLIENT_PHOTOS } from '../assets/images';
 import { RibbonDivider } from '../components/RibbonDivider';
+import { PolaroidPhoto } from '../components/PolaroidPhoto';
 
 interface GalleryPageProps {
   onNavigate: (path: string) => void;
@@ -16,28 +17,28 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
 
   const galleryItems = [
     {
-      ...CLIENT_PHOTOS.photo1,
-      aspect: 'aspect-[4/3]',
-      offset: '',
+      ...CLIENT_PHOTOS.newborn,
       category: 'Newborn Session',
+      tapeVariant: 'kraft' as const,
+      tapeAngle: -2,
     },
     {
-      ...CLIENT_PHOTOS.photo3,
-      aspect: 'aspect-[3/4]',
-      offset: 'md:translate-y-8',
+      ...CLIENT_PHOTOS.maternity,
       category: 'Maternity Session',
+      tapeVariant: 'blush' as const,
+      tapeAngle: 1.5,
     },
     {
-      ...CLIENT_PHOTOS.photo2,
-      aspect: 'aspect-[4/3]',
-      offset: '',
-      category: 'Newborn Session',
+      ...CLIENT_PHOTOS.cakeSmash,
+      category: 'Cake Smash Session',
+      tapeVariant: 'sage' as const,
+      tapeAngle: -1.5,
     },
     {
-      ...CLIENT_PHOTOS.photo4,
-      aspect: 'aspect-[4/3]',
-      offset: 'md:translate-y-6',
+      ...CLIENT_PHOTOS.family,
       category: 'Family Session',
+      tapeVariant: 'kraft' as const,
+      tapeAngle: 2,
     },
   ];
 
@@ -60,46 +61,45 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
         <div className="pt-4 flex items-center justify-center gap-2 text-xs text-[#9CAA8C] uppercase tracking-wider">
           <span>Client-Supplied Photographs</span>
           <span>&middot;</span>
+          <span>Printed Polaroid Display</span>
+          <span>&middot;</span>
           <span>No Stock Imagery</span>
         </div>
       </section>
 
-      {/* 2. ASYMMETRIC FILM-STRIP GALLERY GRID */}
-      <section className="py-8 max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-start">
+      {/* 2. UNIFORM PRINTED POLAROID GALLERY GRID - ALL SAME SIZES */}
+      <section className="py-8 max-w-6xl mx-auto px-6 lg:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center">
           {galleryItems.map((item, idx) => (
             <div
               key={idx}
-              className={`group relative bg-[#FAF5EF] border border-[#EAD3CE] rounded-[20px] overflow-hidden shadow-[0_10px_30px_-6px_rgba(110,78,83,0.12)] transition-all duration-500 hover:shadow-[0_16px_40px_-6px_rgba(110,78,83,0.18)] ${item.offset}`}
+              className="flex flex-col items-center group relative cursor-pointer"
+              onClick={() => setActivePhoto(item)}
             >
-              <div className={`relative w-full ${item.aspect} overflow-hidden cursor-pointer`}
-                onClick={() => setActivePhoto(item)}
-              >
-                <img
+              {/* Polaroid Photo with Washi Tape - Uniform Size */}
+              <div className="relative w-full flex justify-center">
+                <PolaroidPhoto
                   src={item.src}
                   alt={item.alt}
-                  className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700 ease-out"
+                  caption={item.caption}
+                  subcaption={item.category}
+                  tapeVariant={item.tapeVariant}
+                  tapeAngle={item.tapeAngle}
+                  interactive={true}
                 />
 
-                {/* Subtle overlay on hover */}
-                <div className="absolute inset-0 bg-[#362E2B]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-[#FAF5EF]/90 text-[#6E4E53] flex items-center justify-center shadow-md">
-                    <MagnifyingGlassPlus size={22} weight="light" />
+                {/* Hover hint badge */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                  <div className="w-11 h-11 rounded-full bg-[#FAF5EF]/95 text-[#6E4E53] flex items-center justify-center shadow-lg border border-[#EAD3CE]">
+                    <MagnifyingGlassPlus size={20} weight="light" />
                   </div>
-                </div>
-
-                <div className="absolute top-4 left-4 bg-[#FAF5EF]/95 border border-[#EAD3CE] px-3.5 py-1 rounded-full text-xs text-[#6E4E53] font-medium shadow-xs">
-                  {item.category}
                 </div>
               </div>
 
-              {/* Photo Caption */}
-              <div className="p-5 border-t border-[#EAD3CE]/50 flex items-center justify-between">
-                <span className="caption-text text-[#6E4E53] font-semibold">
-                  {item.caption}
-                </span>
-                <span className="text-xs text-[#9CAA8C]">
-                  Adelaide Home Studio
+              {/* Caption metadata */}
+              <div className="mt-3 text-center">
+                <span className="caption-text text-xs text-[#9CAA8C] uppercase tracking-wider">
+                  {item.category} &middot; Lightsview Studio
                 </span>
               </div>
             </div>
@@ -114,12 +114,12 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
           onClick={() => setActivePhoto(null)}
         >
           <div
-            className="relative max-w-4xl max-h-[90vh] bg-[#FAF5EF] rounded-[22px] overflow-hidden p-3 shadow-2xl"
+            className="relative max-w-4xl max-h-[90vh] bg-[#FAF5EF] rounded-[22px] overflow-hidden p-4 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setActivePhoto(null)}
-              className="absolute top-5 right-5 z-10 w-9 h-9 rounded-full bg-[#FAF5EF]/90 text-[#362E2B] hover:text-[#6E4E53] flex items-center justify-center shadow-sm"
+              className="absolute top-5 right-5 z-10 w-9 h-9 rounded-full bg-[#FAF5EF]/90 text-[#362E2B] hover:text-[#6E4E53] flex items-center justify-center shadow-sm cursor-pointer"
               aria-label="Close photo"
             >
               <X size={20} weight="light" />
@@ -128,15 +128,16 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
             <img
               src={activePhoto.src}
               alt={activePhoto.alt}
-              className="max-h-[75vh] w-auto mx-auto object-contain rounded-[16px]"
+              referrerPolicy="no-referrer"
+              className="max-h-[75vh] w-auto mx-auto object-contain rounded-[14px]"
             />
 
             <div className="p-4 text-center">
               <p className="font-display text-lg text-[#362E2B]">
-                {activePhoto.alt}
+                {activePhoto.caption}
               </p>
-              <p className="caption-text text-[#9CAA8C] mt-1">
-                Falguni&apos;s Photography &middot; Lightsview Studio
+              <p className="caption-text text-[#9CAA8C] mt-1 text-xs">
+                Falguni&apos;s Photography &middot; Lightsview Home Studio, Adelaide
               </p>
             </div>
           </div>
@@ -155,7 +156,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
         </p>
         <button
           onClick={() => onNavigate('/contact')}
-          className="px-8 py-3.5 rounded-full bg-[#6E4E53] text-[#FAF5EF] font-medium text-base hover:bg-[#583D42] transition-colors inline-flex items-center gap-2 shadow-sm"
+          className="px-8 py-3.5 rounded-full bg-[#6E4E53] text-[#FAF5EF] font-medium text-base hover:bg-[#583D42] transition-colors inline-flex items-center gap-2 shadow-sm cursor-pointer"
         >
           <span>Check Available Dates</span>
           <ArrowRight size={18} weight="light" />

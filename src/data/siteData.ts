@@ -6,7 +6,7 @@ export const STUDIO_INFO = {
   address: "26 South Pkwy, Northfield SA 5085, Australia",
   phone: "+61 469 753 238",
   phoneDisplay: "+61 469 753 238",
-  hours: "Open daily, 9 AM – 6 PM",
+  hours: "Open daily, 9 AM to 6 PM",
   serviceArea: "Northfield, Lightsview, and the surrounding north-eastern suburbs of Adelaide, South Australia",
   basePrice: "$300",
   googleRating: "5.0",
@@ -24,9 +24,9 @@ export const PAGES_DATA: Record<string, PageData> = {
       {
         section_name: "Hero",
         heading_tag: "h1",
-        headline: "Newborn & Family Photography in Lightsview, Adelaide",
-        subheadline: "Unhurried sessions built around your baby's schedule, not a studio clock.",
-        body_copy: "Falguni's Photography is a home studio in Lightsview specialising in newborn, maternity, family and cake smash sessions. Every shoot moves at your baby's pace, with warm light, soft wraps and the patience it takes to catch a real smile.",
+        headline: "Newborn and Family Photography in Lightsview, Adelaide",
+        subheadline: "Gentle sessions timed around your baby, with feeding breaks built in.",
+        body_copy: "Falguni runs a warm home studio in Lightsview for newborn, maternity, family, and cake smash sessions. Every shoot moves at your baby's pace, with soft wraps, calm lighting, and the time it takes to settle.",
         cta_text: "Check Available Dates",
         image_source: "photo1",
         image_alt_text: "Newborn baby sleeping wrapped in a soft cream blanket during a photography session in Adelaide",
@@ -35,9 +35,9 @@ export const PAGES_DATA: Record<string, PageData> = {
       {
         section_name: "Studio intro",
         heading_tag: "h2",
-        headline: "A Studio Built on Patience",
+        headline: "A Quiet Studio in Lightsview",
         subheadline: "",
-        body_copy: "Falguni has spent years photographing newborns as young as five days old, working alongside her husband to keep every session calm and unrushed. Parents come back for the second baby, the first birthday, the whole family — because the experience feels like visiting family, not sitting through a shoot.",
+        body_copy: "Falguni photographs newborns from five days old, working alongside her husband to keep sessions calm and unhurried. Parents return for second babies, first birthdays, and updated family portraits because the studio feels comfortable and easy.",
         cta_text: "Meet Falguni",
         seo_notes: "Reinforces the patience/unhurried value theme in plain language for both readers and crawlers."
       },
@@ -46,7 +46,7 @@ export const PAGES_DATA: Record<string, PageData> = {
         heading_tag: "h2",
         headline: "Sessions",
         subheadline: "Every package starts at $300.",
-        body_copy: "Newborn, maternity, family and cake smash sessions, each tailored to the age and stage you're capturing.",
+        body_copy: "Newborn, maternity, family, and cake smash sessions, tailored to the age and stage you want to capture.",
         cta_text: "View All Sessions",
         seo_notes: "Internal links out to each silo page for crawl distribution."
       },
@@ -55,14 +55,14 @@ export const PAGES_DATA: Record<string, PageData> = {
         heading_tag: "h2",
         headline: "What Parents Say",
         subheadline: "5.0 stars across 60 Google reviews.",
-        body_copy: "\"She is really very nice. Very cooperative and warm welcoming behaviour of her and family. Really recommend.\" — Harmandeep K.\n\n\"I am happy with experience of getting my 5 weeks baby photoshoot done by Falguni. She is excellent, amazing and wonderful.\" — Prabhjot G.\n\n\"Very professional and very calm, especially needed this kind of patience when it is newborns or month old baby's photoshoot.\" — Gurpreet S.",
-        seo_notes: "Real, attributed reviews — no fabricated ratings or counts."
+        body_copy: "\"She is really very nice. Very cooperative and warm welcoming behaviour of her and family. Really recommend.\" - Harmandeep K.\n\n\"I am happy with experience of getting my 5 weeks baby photoshoot done by Falguni. She is excellent, amazing and wonderful.\" - Prabhjot G.\n\n\"Very professional and very calm, especially needed this kind of patience when it is newborns or month old baby's photoshoot.\" - Gurpreet S.",
+        seo_notes: "Real, attributed reviews with no fabricated ratings or counts."
       },
       {
         section_name: "Closing CTA",
         heading_tag: "h2",
         headline: "Ready to Book",
-        subheadline: "Newborn sessions book fastest — the sweet spot is 5 to 20 days old.",
+        subheadline: "Newborn sessions book early, with the ideal window between 5 and 20 days old.",
         body_copy: "",
         cta_text: "Get in Touch"
       }
@@ -80,8 +80,8 @@ export const PAGES_DATA: Record<string, PageData> = {
         section_name: "Hero",
         heading_tag: "h1",
         headline: "Newborn Photography in Lightsview, Adelaide",
-        subheadline: "Sessions timed for the first two weeks, when babies sleep deepest and curl up smallest.",
-        body_copy: "Newborn sessions run two hours in Falguni's Lightsview home studio, with two wrap outfits included and time built in for feeding and settling breaks. The best window is five to twenty days old, though every session moves around your baby, not the clock.",
+        subheadline: "Sessions timed for the first two weeks, when babies sleep deeply and curl up naturally.",
+        body_copy: "Newborn sessions run for two hours in Falguni's Lightsview home studio. Two wrap outfits are provided, with plenty of time set aside for feeds, cuddles, and settling. The best window is five to twenty days old, though we always adjust to your baby's pace.",
         cta_text: "Book a Newborn Session",
         image_source: "photo2",
         image_alt_text: "Newborn baby curled up on a soft blanket during a gentle newborn photography session",
@@ -92,7 +92,7 @@ export const PAGES_DATA: Record<string, PageData> = {
         heading_tag: "h2",
         headline: "What's Included",
         subheadline: "",
-        body_copy: "A two-hour session includes six fully edited photos, two wrap outfit changes, and optional shots with mum or dad. A non-refundable deposit secures your date, since newborn slots are limited to a narrow window around your due date.",
+        body_copy: "A two-hour session includes six fully edited photos, two wrap outfit changes, and optional photos with parents. A deposit secures your date, and we adjust the timing if your baby arrives earlier or later than planned.",
         seo_notes: "Answers a common pre-booking question directly, supports FAQ schema."
       },
       {
@@ -100,22 +100,22 @@ export const PAGES_DATA: Record<string, PageData> = {
         heading_tag: "h2",
         headline: "Why Parents Choose This Studio",
         subheadline: "",
-        body_copy: "\"She made him feel super comfortable. She even managed to capture some smiles from my little one.\" — Krima P.\n\n\"Falguni was patient, friendly, and made everyone feel comfortable throughout the session.\" — Priyanka D.",
+        body_copy: "\"She made him feel super comfortable. She even managed to capture some smiles from my little one.\" - Krima P.\n\n\"Falguni was patient, friendly, and made everyone feel comfortable throughout the session.\" - Priyanka D.",
         seo_notes: ""
       }
     ],
     faq_block: [
       {
         question: "When should I book my newborn photography session?",
-        answer: "Book as soon as you know your due date, ideally in your third trimester. Newborn sessions work best between five and twenty days old, and that window fills quickly, so early booking protects your spot even if the exact date shifts with your delivery."
+        answer: "Book during your second or third trimester based on your due date. Newborn sessions work best between five and twenty days old. Booking early holds your spot on the studio calendar, and we confirm the exact day after baby arrives."
       },
       {
         question: "What if my baby is born early or late?",
-        answer: "Falguni works around your baby's actual arrival, not a fixed calendar date. Once your baby is born, message with the birth date and she'll help you find the closest available slot inside the five-to-twenty-day window."
+        answer: "Falguni plans around your baby's actual arrival. Once your baby is born, message us with the birth date and Falguni will schedule your session within the five to twenty day window."
       },
       {
         question: "How much does a newborn session cost?",
-        answer: "Newborn sessions start at $300 and include a two-hour studio visit, two wrap outfit changes, and six fully edited photos. A non-refundable deposit is required to hold your date."
+        answer: "Newborn sessions start at $300 and include a two-hour studio visit, two wrap outfits, and six fully edited digital photos. A deposit is required to hold your date."
       }
     ]
   },
@@ -130,8 +130,8 @@ export const PAGES_DATA: Record<string, PageData> = {
         section_name: "Hero",
         heading_tag: "h1",
         headline: "Maternity Photography in Lightsview, Adelaide",
-        subheadline: "Soft, unposed portraits for the last weeks before baby arrives.",
-        body_copy: "Maternity sessions are shot in the same warm home studio, with wraps and simple backdrops that keep attention on you and the bump rather than props. Most parents book between 28 and 34 weeks, when the bump is full but travel is still comfortable.",
+        subheadline: "Simple portraits in the weeks before baby arrives.",
+        body_copy: "Maternity sessions take place in the Lightsview studio using soft lighting and neutral backdrops that keep attention on you and your bump. Most parents book between 28 and 34 weeks, when the bump is full and moving around is still comfortable.",
         cta_text: "Book a Maternity Session",
         image_source: "photo3",
         image_alt_text: "Expecting mother photographed in soft natural light during a maternity photography session in Adelaide",
@@ -142,7 +142,7 @@ export const PAGES_DATA: Record<string, PageData> = {
         heading_tag: "h2",
         headline: "What's Included",
         subheadline: "",
-        body_copy: "Sessions start at $300 and run around 90 minutes, with wardrobe guidance provided beforehand so you know exactly what to bring. Partners and older siblings are welcome to join for part of the shoot at no extra cost.",
+        body_copy: "Sessions start at $300 and run for approximately 90 minutes. We provide wardrobe advice beforehand so you know what to wear. Partners and older children are welcome to join for part of the session at no extra charge.",
         seo_notes: ""
       },
       {
@@ -150,18 +150,18 @@ export const PAGES_DATA: Record<string, PageData> = {
         heading_tag: "h2",
         headline: "What Parents Say",
         subheadline: "",
-        body_copy: "\"It was wonderful experience... I really enjoyed my maternity shoot.\" — Veerpal K.\n\n\"We really enjoyed my wife's maternity shoot... we highly recommend your photography to everyone.\" — Arsh M.",
+        body_copy: "\"It was wonderful experience... I really enjoyed my maternity shoot.\" - Veerpal K.\n\n\"We really enjoyed my wife's maternity shoot... we highly recommend your photography to everyone.\" - Arsh M.",
         seo_notes: ""
       }
     ],
     faq_block: [
       {
         question: "What's the best time in pregnancy for maternity photos?",
-        answer: "Most parents book between 28 and 34 weeks, when the bump is at its fullest but standing and moving around the studio is still comfortable. Earlier is fine too if that works better for your schedule."
+        answer: "Most parents book between 28 and 34 weeks, when your bump is nicely rounded and standing or sitting remains comfortable. An earlier week works well too if that suits your schedule."
       },
       {
         question: "Can my partner or other kids be in the photos?",
-        answer: "Yes. Partners and siblings are welcome to join for part of the session, and Falguni will guide posing so everyone looks natural together, not stiff or staged."
+        answer: "Yes. Partners and children are welcome to join for part of the session. Falguni helps guide positioning so everyone looks natural together."
       }
     ]
   },
@@ -176,8 +176,8 @@ export const PAGES_DATA: Record<string, PageData> = {
         section_name: "Hero",
         heading_tag: "h1",
         headline: "Family Photography in Lightsview, Adelaide",
-        subheadline: "Relaxed portraits that actually look like your family, not a stock photo.",
-        body_copy: "Family sessions run about an hour in studio or at a nearby outdoor spot in Adelaide's north-east, built around real interaction rather than stiff lineups. Falguni works especially well with young kids, using patience over posing to get genuine expressions. Family sessions also cover sitter sessions for babies around six to nine months who are steady enough to sit up on their own — same relaxed, patient approach, just scaled to a smaller subject.",
+        subheadline: "Natural portraits of your family, captured comfortably.",
+        body_copy: "Family sessions run for about an hour in the studio or at a nearby outdoor park in Adelaide's north-east. Falguni gives children time to play and relax rather than demanding rigid poses. We also offer sitter sessions for babies around six to nine months who sit steadily on their own.",
         cta_text: "Book a Family Session",
         image_source: "photo4",
         image_alt_text: "Parents and young children photographed together during a relaxed family photography session",
@@ -188,7 +188,7 @@ export const PAGES_DATA: Record<string, PageData> = {
         heading_tag: "h2",
         headline: "What's Included",
         subheadline: "",
-        body_copy: "Sessions start at $300 for up to five people, with a small per-person add-on for larger families. You'll receive a set of fully edited photos within two weeks of your session.",
+        body_copy: "Sessions start at $300 for up to five family members, with a per-person add-on for extended groups. You will receive a gallery of fully edited digital images within two weeks.",
         seo_notes: ""
       },
       {
@@ -196,18 +196,18 @@ export const PAGES_DATA: Record<string, PageData> = {
         heading_tag: "h2",
         headline: "What Parents Say",
         subheadline: "",
-        body_copy: "\"The way she worked with our kids was simply amazing — patient, kind, and creative, bringing out their genuine smiles.\" — Kuljeet S.\n\n\"Very happy with quality and the service!\" — Anwar.",
+        body_copy: "\"The way she worked with our kids was simply amazing, patient, kind, and creative, bringing out their genuine smiles.\" - Kuljeet S.\n\n\"Very happy with quality and the service!\" - Anwar",
         seo_notes: ""
       }
     ],
     faq_block: [
       {
         question: "My kids don't sit still for photos. Is that a problem?",
-        answer: "No. Falguni photographs young children regularly and builds extra time into every session for that exact reason. Play and movement are part of the process, not something to avoid."
+        answer: "No problem at all. Falguni photographs young children regularly and leaves extra time in the session. Play and natural movement are welcomed."
       },
       {
         question: "Do sessions happen indoors or outdoors?",
-        answer: "Both are available. The Lightsview studio works year-round regardless of weather, and outdoor sessions can be arranged at a nearby park or location in Adelaide's north-east if you'd prefer natural surroundings."
+        answer: "Both options are available. The Lightsview studio works year-round in any weather. Outdoor sessions can be scheduled at a park in Adelaide's north-eastern suburbs if you prefer outdoor greenery."
       }
     ]
   },
@@ -222,8 +222,8 @@ export const PAGES_DATA: Record<string, PageData> = {
         section_name: "Hero",
         heading_tag: "h1",
         headline: "Cake Smash Photography in Lightsview, Adelaide",
-        subheadline: "A messy, joyful first birthday session, cleanup included.",
-        body_copy: "Cake smash sessions are built for one-year-olds who are ready to get their hands, and everything else, into a cake. Falguni supplies the backdrop and setup, and the studio cleanup is handled after — you just bring the outfit and the birthday energy.",
+        subheadline: "A fun first birthday session with studio cleanup taken care of.",
+        body_copy: "Cake smash sessions celebrate your little one turning one. Falguni sets up the backdrop and cleans up the frosting mess afterward. You bring the cake and the outfit.",
         cta_text: "Book a Cake Smash Session",
         image_source: "photo1",
         image_alt_text: "One-year-old baby smashing a birthday cake during a cake smash photography session",
@@ -234,7 +234,7 @@ export const PAGES_DATA: Record<string, PageData> = {
         heading_tag: "h2",
         headline: "What's Included",
         subheadline: "",
-        body_copy: "Sessions start at $300 and run about 45 minutes, timed around your baby's nap schedule when possible. A simple bath setup can be added at the end so you're not driving home covered in frosting.",
+        body_copy: "Sessions start at $300 and last about 45 minutes, scheduled around your baby's nap times. A warm splash bath setup at the end is included so your baby leaves clean.",
         seo_notes: ""
       },
       {
@@ -242,18 +242,18 @@ export const PAGES_DATA: Record<string, PageData> = {
         heading_tag: "h2",
         headline: "What Parents Say",
         subheadline: "",
-        body_copy: "\"Excellent service, I did my little one's first birthday photographs through her, she did amazing work.\" — Sanobiya V.",
+        body_copy: "\"Excellent service, I did my little one's first birthday photographs through her, she did amazing work.\" - Sanobiya V.",
         seo_notes: ""
       }
     ],
     faq_block: [
       {
         question: "How old should my baby be for a cake smash?",
-        answer: "Most cake smash sessions happen right around the first birthday, once babies are sitting confidently and can grab and explore on their own. A few weeks before or after the birthday date works fine."
+        answer: "Most cake smash sessions take place around the first birthday, once babies sit comfortably and enjoy exploring food with their hands. A few weeks before or after the actual birthday date works well."
       },
       {
         question: "Do you provide the cake?",
-        answer: "The studio setup, backdrop and styling are included. Bring your baby's cake and outfit, and Falguni will handle the rest, including a quick clean-up option afterward."
+        answer: "The studio setup, backdrop, and styling are included. You bring your baby's cake and outfit, and Falguni takes care of the session and cleanup."
       }
     ]
   },
@@ -269,7 +269,7 @@ export const PAGES_DATA: Record<string, PageData> = {
         heading_tag: "h1",
         headline: "About Falguni's Photography",
         subheadline: "",
-        body_copy: "Falguni started photographing newborns because she wanted new parents to have one calm hour in the middle of a chaotic first few weeks. Years and dozens of five-star reviews later, that's still the whole approach: slow down, let the baby set the pace, and capture what's actually happening instead of forcing a pose. She works alongside her husband, who handles setup and support so every session runs smoothly from the moment you walk in.",
+        body_copy: "Falguni started photographing newborns to give new parents a quiet, calm hour during those first few busy weeks. Her approach is straightforward: give babies time, follow their cues, and capture real expressions without forcing poses. Her husband assists with studio setup and lighting so every family feels looked after from the moment they arrive.",
         cta_text: "",
         image_source: "photo2",
         image_alt_text: "Falguni's Photography home studio setup in Lightsview, Adelaide",
@@ -280,7 +280,7 @@ export const PAGES_DATA: Record<string, PageData> = {
         heading_tag: "h2",
         headline: "How a Session Feels",
         subheadline: "",
-        body_copy: "There's no rushing here. Feeding breaks, fussy moments and slow warm-ups are expected, not a problem to work around. Parents consistently mention how comfortable and unhurried their session felt — that's by design, not luck.",
+        body_copy: "There is no rush here. Feeding breaks, diaper changes, and settling time are built into every session. Parents regularly mention how comfortable and relaxed their visit felt, which is exactly the goal.",
         cta_text: "Book a Session"
       }
     ],
@@ -297,8 +297,8 @@ export const PAGES_DATA: Record<string, PageData> = {
         section_name: "Gallery intro",
         heading_tag: "h1",
         headline: "Newborn, Maternity & Family Photography Gallery",
-        subheadline: "A look at real sessions from the Lightsview studio.",
-        body_copy: "Every photo below is from an actual client session — no stock images, no filler.",
+        subheadline: "Photos from actual sessions in our Lightsview studio.",
+        body_copy: "Every photograph shown here is from a client session in Adelaide. No stock photos.",
         seo_notes: "Single H1 governs the whole gallery; individual photos are presented as a grid beneath it rather than as separate headed sections, since they're variations of one gallery concept, not distinct topics."
       }
     ],
@@ -315,8 +315,8 @@ export const PAGES_DATA: Record<string, PageData> = {
         section_name: "Hero",
         heading_tag: "h1",
         headline: "Book Your Session",
-        subheadline: "Every session starts at $300. Send a few details and Falguni will confirm the next available date.",
-        body_copy: "Fill in the form with your session type and rough timeframe — due date for newborns and maternity, or your preferred week for family and cake smash — and you'll hear back within a day or two with available dates and next steps.",
+        subheadline: "Every session starts at $300. Send your details and Falguni will confirm the next available date.",
+        body_copy: "Let us know your preferred session type and rough timeframe, such as your due date for newborns or your ideal month for family portraits. Falguni will reply within 24 hours with available dates.",
         cta_text: "Send Booking Request",
         image_source: "photo3",
         image_alt_text: "Expecting mother photographed in soft natural light during a maternity photography session in Adelaide",
@@ -326,11 +326,11 @@ export const PAGES_DATA: Record<string, PageData> = {
     faq_block: [
       {
         question: "How do I secure my date?",
-        answer: "A non-refundable deposit locks in your session date once you've agreed on a time. Details are sent after your initial message so you know exactly what to expect before paying anything."
+        answer: "A deposit locks in your session date once we agree on a time. Details are provided after your initial inquiry so you know exactly what to expect before paying anything."
       },
       {
         question: "What areas do you service?",
-        answer: "The studio is based in Lightsview, within Adelaide's northern suburbs, and covers Northfield and the surrounding north-east Adelaide area. Outdoor sessions can be arranged a little further out by request."
+        answer: "The studio is based in Lightsview, within Adelaide's northern suburbs, and serves Northfield and the surrounding north-eastern Adelaide suburbs. Outdoor sessions can be scheduled at nearby parks by request."
       }
     ]
   }

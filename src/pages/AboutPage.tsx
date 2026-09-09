@@ -3,6 +3,7 @@ import { ArrowRight, Heart, Users, Clock, ShieldCheck } from '@phosphor-icons/re
 import { PAGES_DATA, STUDIO_INFO } from '../data/siteData';
 import { CLIENT_PHOTOS } from '../assets/images';
 import { RibbonDivider } from '../components/RibbonDivider';
+import { PolaroidPhoto } from '../components/PolaroidPhoto';
 
 interface AboutPageProps {
   onNavigate: (path: string) => void;
@@ -51,14 +52,15 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
             </div>
           </div>
 
-          <div className="lg:col-span-5">
-            <div className="relative rounded-[20px] overflow-hidden shadow-[0_12px_36px_-8px_rgba(110,78,83,0.18)] border border-[#EAD3CE]/80 bg-[#FAF5EF]">
-              <img
-                src={CLIENT_PHOTOS.photo2.src}
-                alt={hero.image_alt_text || "Falguni's Photography home studio setup in Lightsview, Adelaide"}
-                className="w-full h-auto object-cover aspect-[4/3] transform hover:scale-102 transition-transform duration-700 ease-out"
-              />
-            </div>
+          <div className="lg:col-span-5 flex justify-center">
+            <PolaroidPhoto
+              src={CLIENT_PHOTOS.family.src}
+              alt={hero.image_alt_text || CLIENT_PHOTOS.family.alt}
+              caption="Unhurried Family Moments"
+              subcaption="Lightsview, Adelaide"
+              tapeVariant="kraft"
+              tapeAngle={-1.5}
+            />
           </div>
         </div>
       </section>

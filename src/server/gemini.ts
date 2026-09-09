@@ -43,7 +43,7 @@ Answer any visitor questions directly and calmly using the facts above. When the
 5. Email or phone for follow-up
 
 Once all details are gathered, hand off warmly with this exact phrase:
-"Thanks — I've passed your details along to Falguni. She'll follow up within a day or two to confirm your date."
+"Thanks, I have passed your details along to Falguni. She will follow up within a day or two to confirm your date."
 `;
 
 export async function askWillow(messages: { sender: string; text: string }[]): Promise<string> {
@@ -68,12 +68,12 @@ export async function askWillow(messages: { sender: string; text: string }[]): P
     }));
 
     const response = await client.models.generateContent({
-      model: 'gemini-3.8-flash',
+      model: 'gemini-2.5-flash',
       contents,
       config: {
         systemInstruction: WILLOW_SYSTEM_INSTRUCTION,
         temperature: 0.6,
-        maxOutputTokens: 250,
+        maxOutputTokens: 300,
       }
     });
 
@@ -83,4 +83,100 @@ export async function askWillow(messages: { sender: string; text: string }[]): P
     console.warn('[Gemini API Willow error]:', error);
     return "Falguni's home studio in Lightsview welcomes babies and families with unhurried patience. Every session starts at $300. Would you like to let us know your preferred timeframe?";
   }
+}
+
+export interface ExtractedBooking {
+  isBookingIntent: boolean;
+  isReadyToBook: boolean;
+  name?: string;
+  email?: string;
+  phone?: string;
+  sessionType?: string;
+  timeframeOrDueDate?: string;
+  preferredDates?: string;
+  notes?: string;
+}
+
+/**
+ * Extracts booking details from the chat messages either via Gemini structured JSON
+ * or heuristic regex fallback if Gemini is unavailable.
+ */
+export async function extractBookingFromChat(messages: { sender: string; text: string }[]): Promise<ExtractedBooking> {
+  const fullText = messages.map(m => `${m.sender}: ${m.text}`).join('\n');
+  const userTexts = messages.filter(m => m.sender === 'user').map(m => m.text).join(' ');
+
+  // Heuristic extraction
+  const emailMatch = fullText.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/);
+  const phoneMatch = fullText.match(/(?:\+?61|0)[2-478](?:[ -]?[0-9]){8}\b/) || fullText.match(/\b04[0-9]{2}[ -]?[0-9]{3}[ -]?[0-9]{3}\b/) || fullText.match(/\b\d{8,12}\b/);
+  
+  let detectedSession = 'Newborn Photography';
+  const lowerUser = userTexts.toLowerCase();
+  if (lowerUser.includes('maternity') || lowerUser.includes('bump') || lowerUser.includes('pregnancy')) {
+    detectedSession = 'Maternity Photography';
+  } else if (lowerUser.includes('cake') || lowerUser.includes('smash') || lowerUser.includes('first birthday')) {
+    detectedSession = 'Cake Smash Photography';
+  } else if (lowerUser.includes('family') || lowerUser.includes('sitter') || lowerUser.includes('toddler')) {
+    detectedSession = 'Family Photography';
+  }
+
+  const client = getAiClient();
+  if (client && messages.length >= 3 && (emailMatch || lowerUser.includes('book') || lowerUser.includes('due date'))) {
+    try {
+      const prompt = `Analyze this customer chat with Willow, the photography studio assistant for Falguni's Photography in Adelaide.
+Extract the booking details into JSON with these exact keys:
+{
+  "isBookingIntent": boolean,
+  "isReadyToBook": boolean (true if at least an email or phone AND a name or timeframe/session are found),
+  "name": string or null,
+  "email": string or null,
+  "phone": string or null,
+  "sessionType": "Newborn Photography" | "Maternity Photography" | "Family Photography" | "Cake Smash Photography",
+  "timeframeOrDueDate": string or null,
+  "preferredDates": string or null,
+  "notes": string or null
+}
+
+Chat transcript:
+${fullText}
+
+Return ONLY valid raw JSON, without markdown blocks.`;
+
+      const result = await client.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        config: {
+          temperature: 0.1,
+          responseMimeType: 'application/json',
+        }
+      });
+
+      const parsed = JSON.parse(result.text || '{}');
+      return {
+        isBookingIntent: Boolean(parsed.isBookingIntent || emailMatch),
+        isReadyToBook: Boolean(parsed.isReadyToBook || (parsed.email && parsed.sessionType)),
+        name: parsed.name || (emailMatch ? 'Studio Client' : undefined),
+        email: parsed.email || emailMatch?.[0],
+        phone: parsed.phone || phoneMatch?.[0],
+        sessionType: parsed.sessionType || detectedSession,
+        timeframeOrDueDate: parsed.timeframeOrDueDate || 'To be confirmed with Falguni',
+        preferredDates: parsed.preferredDates || undefined,
+        notes: parsed.notes || fullText,
+      };
+    } catch (e) {
+      console.warn('[Booking Extraction Gemini Error]:', e);
+    }
+  }
+
+  // Fast deterministic fallback
+  const isReady = Boolean(emailMatch);
+  return {
+    isBookingIntent: isReady || lowerUser.includes('book') || lowerUser.includes('session'),
+    isReadyToBook: isReady,
+    name: isReady ? 'Studio Client' : undefined,
+    email: emailMatch?.[0],
+    phone: phoneMatch?.[0],
+    sessionType: detectedSession,
+    timeframeOrDueDate: 'Captured via chat session',
+    notes: fullText,
+  };
 }
