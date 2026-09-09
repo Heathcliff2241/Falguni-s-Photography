@@ -11,7 +11,22 @@ export const FAMILY_PHOTO_URL =
 export const CAKE_SMASH_PHOTO_URL =
   'https://scontent.fceb1-2.fna.fbcdn.net/v/t39.30808-6/761858717_1030367109792164_2414055211928486415_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x1408&ctp=s2048x1408&_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeF2-I-yu9uIFNNhEM9KH1ylz7J_AHxdfTTPsn8AfF19NF_JOk3pBt12A6qedeuwOoQ-nyoLrmK5GTBQAPtLCQpu&_nc_ohc=YMkWuxKHOoMQ7kNvwEEqgzn&_nc_oc=Adoi-rUvjDaLbUMzWZ6T6ArTljlzCK3dm7WEWQeh9wXQExFo4g98_lwsA_atvu-JFZ4&_nc_pt=1&_nc_zt=23&_nc_ht=scontent.fceb1-2.fna&_nc_gid=rVv0ZB0YZpMISFBlye76OA&_nc_ss=7b2a8&oh=00_AQJLuBeX5b21gTY7CHfYidIcpxwDxLW33jhBFgNwtHz8Pw&oe=6AA6C867';
 
+// Falguni's portrait
+export const FALGUNI_PORTRAIT_URL =
+  '/falguni_portrait.jpg';
+export const FALGUNI_ORIGINAL_CDN_URL =
+  'https://scontent.fceb6-1.fna.fbcdn.net/v/t39.30808-6/492338892_664603936368485_893668748178494389_n.jpg?stp=dst-jpg_tt6&cstp=mx1068x1067&ctp=s1068x1067&_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeE4Jun_US60n9N4vWPuIVbHkR7uDfe2NLmRHu4N97Y0uTQeuXhn43R-ybNTHRD2CFpGlKl7SAm3Zs_L9L9PSx2y&_nc_ohc=L3Y2kmKpYkIQ7kNvwFgMFAn&_nc_oc=AdqR4bQtQVnbi8XSrOE_-C-M5tdmA2v4uzRpk9Nd31CK0mJmPRtlp18j_GeU6HsjOkw&_nc_pt=1&_nc_zt=23&_nc_ht=scontent.fceb6-1.fna&_nc_gid=_0ISqRYu2Ep7JWfn0SljbA&_nc_ss=7b2a8&oh=00_AQJUtXBiGVKWbmIWmtZI0mm6wNGfsgUgt8q8wg4Vq7dXXQ&oe=6AA6A39A';
+
 export const CLIENT_PHOTOS = {
+  // Photographer portrait
+  falguni: {
+    src: FALGUNI_ORIGINAL_CDN_URL,
+    fallbackSrc: FALGUNI_PORTRAIT_URL,
+    alt: "Falguni, newborn and family photographer at Falguni's Photography home studio in Lightsview Adelaide",
+    caption: "Falguni, Lead Photographer",
+    sessionType: "About Falguni"
+  },
+
   // Primary session photography
   newborn: {
     src: NEWBORN_PHOTO_URL,

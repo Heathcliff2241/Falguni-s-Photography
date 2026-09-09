@@ -65,6 +65,27 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
   }, []);
 
   const handleNavClick = (path: string) => {
+    if (path === '/reviews' || path === '#reviews') {
+      if (currentPath === '/') {
+        const el = document.getElementById('reviews-section') || document.getElementById('reviews');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+          setMobileMenuOpen(false);
+          setDesktopServicesOpen(false);
+          return;
+        }
+      }
+      onNavigate('/');
+      setTimeout(() => {
+        const el = document.getElementById('reviews-section') || document.getElementById('reviews');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 150);
+      setMobileMenuOpen(false);
+      setDesktopServicesOpen(false);
+      return;
+    }
     onNavigate(path);
     setMobileMenuOpen(false);
     setDesktopServicesOpen(false);
@@ -213,6 +234,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
           </button>
 
           <button
+            onClick={() => handleNavClick('/reviews')}
+            className="transition-colors py-1 cursor-pointer relative focus:outline-none text-[#362E2B]/80 hover:text-[#6E4E53]"
+          >
+            Reviews
+          </button>
+
+          <button
             onClick={() => handleNavClick('/contact')}
             className={`transition-colors py-1 cursor-pointer relative focus:outline-none ${
               currentPath === '/contact' 
@@ -327,6 +355,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
             >
               <span>Gallery</span>
               {currentPath === '/gallery' && <span className="text-xs text-[#9CAA8C] uppercase tracking-wider">Current</span>}
+            </button>
+
+            <button
+              onClick={() => handleNavClick('/reviews')}
+              className="text-left py-2 text-base transition-colors flex items-center justify-between text-[#362E2B]/80 hover:text-[#6E4E53]"
+            >
+              <span>Client Reviews (5.0 Stars)</span>
             </button>
 
             <button

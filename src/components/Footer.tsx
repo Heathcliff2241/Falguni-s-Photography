@@ -16,6 +16,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
   const quickLinks = [
     { label: 'Home', path: '/' },
+    { label: 'Client Reviews (5.0 Stars)', path: '/reviews' },
     { label: 'About Falguni', path: '/about' },
     { label: 'Real Photo Gallery', path: '/gallery' },
     { label: 'Book Your Session', path: '/contact' },
@@ -71,6 +72,19 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <li key={link.path}>
                   <button
                     onClick={() => {
+                      if (link.path === '/reviews') {
+                        const el = document.getElementById('reviews-section') || document.getElementById('reviews');
+                        if (el) {
+                          el.scrollIntoView({ behavior: 'smooth' });
+                          return;
+                        }
+                        onNavigate('/');
+                        setTimeout(() => {
+                          const target = document.getElementById('reviews-section') || document.getElementById('reviews');
+                          if (target) target.scrollIntoView({ behavior: 'smooth' });
+                        }, 150);
+                        return;
+                      }
                       onNavigate(link.path);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}

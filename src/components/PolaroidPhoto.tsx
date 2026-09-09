@@ -11,6 +11,8 @@ export interface PolaroidPhotoProps {
   className?: string;
   onClick?: () => void;
   interactive?: boolean;
+  aspectRatio?: string;
+  fallbackSrc?: string;
 }
 
 export const PolaroidPhoto: React.FC<PolaroidPhotoProps> = ({
@@ -24,7 +26,14 @@ export const PolaroidPhoto: React.FC<PolaroidPhotoProps> = ({
   className = '',
   onClick,
   interactive = false,
+  aspectRatio = 'aspect-[4/3]',
+  fallbackSrc,
 }) => {
+  const [imgSrc, setImgSrc] = React.useState(src);
+
+  React.useEffect(() => {
+    setImgSrc(src);
+  }, [src]);
   // Tape color themes with semi-translucence and realistic texture
   const tapeColors = {
     kraft: {
@@ -123,12 +132,17 @@ export const PolaroidPhoto: React.FC<PolaroidPhotoProps> = ({
           interactive ? 'cursor-pointer hover:shadow-[0_18px_36px_-6px_rgba(54,46,43,0.22)] hover:-translate-y-1' : ''
         }`}
       >
-        {/* Photo Cutout - UNIFORM 4:3 RATIO FOR ALL POLAROIDS */}
-        <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#F6F2EB] border border-[#E3DCD0]/70">
+        {/* Photo Cutout - UNIFORM ASPECT RATIO */}
+        <div className={`relative w-full ${aspectRatio} overflow-hidden bg-[#F6F2EB] border border-[#E3DCD0]/70`}>
           <img
-            src={src}
+            src={imgSrc}
             alt={alt}
             referrerPolicy="no-referrer"
+            onError={() => {
+              if (fallbackSrc && imgSrc !== fallbackSrc) {
+                setImgSrc(fallbackSrc);
+              }
+            }}
             className="w-full h-full object-cover object-center transition-transform duration-500 ease-out hover:scale-102"
           />
           {/* Subtle glossy photo sheen overlay */}

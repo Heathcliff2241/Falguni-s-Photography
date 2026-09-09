@@ -54,12 +54,14 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
 
           <div className="lg:col-span-5 flex justify-center">
             <PolaroidPhoto
-              src={CLIENT_PHOTOS.family.src}
-              alt={hero.image_alt_text || CLIENT_PHOTOS.family.alt}
-              caption="Unhurried Family Moments"
-              subcaption="Lightsview, Adelaide"
+              src={CLIENT_PHOTOS.falguni.src}
+              fallbackSrc={CLIENT_PHOTOS.falguni.fallbackSrc}
+              alt="Falguni, newborn and family photographer at Falguni's Photography home studio in Lightsview Adelaide"
+              caption="Meet Falguni"
+              subcaption="Lead Photographer & Mother · Lightsview, Adelaide"
               tapeVariant="kraft"
               tapeAngle={-1.5}
+              aspectRatio="aspect-square"
             />
           </div>
         </div>

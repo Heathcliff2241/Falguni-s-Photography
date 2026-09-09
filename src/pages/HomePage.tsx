@@ -11,6 +11,7 @@ import { PAGES_DATA, STUDIO_INFO } from '../data/siteData';
 import { CLIENT_PHOTOS } from '../assets/images';
 import { RibbonDivider } from '../components/RibbonDivider';
 import { PolaroidPhoto } from '../components/PolaroidPhoto';
+import { ReviewsSection } from '../components/ReviewsSection';
 
 interface HomePageProps {
   onNavigate: (path: string) => void;
@@ -21,7 +22,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   const hero = page.sections[0];
   const intro = page.sections[1];
   const servicesSec = page.sections[2];
-  const testimonials = page.sections[3];
   const closing = page.sections[4];
 
   // Above-the-fold Interactive Availability Checker State
@@ -251,23 +251,48 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       <RibbonDivider />
 
       {/* 2. STUDIO INTRO SECTION: A Studio Built on Patience */}
-      <section className="py-20 max-w-5xl mx-auto px-6 lg:px-12 text-center">
-        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#362E2B] mb-6 font-normal">
-          {intro.headline}
-        </h2>
+      <section className="py-20 max-w-6xl mx-auto px-6 lg:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          <div className="lg:col-span-5 flex justify-center order-2 lg:order-1">
+            <PolaroidPhoto
+              src={CLIENT_PHOTOS.falguni.src}
+              fallbackSrc={CLIENT_PHOTOS.falguni.fallbackSrc}
+              alt="Falguni, newborn and family photographer at Falguni's Photography home studio in Lightsview Adelaide"
+              caption="Meet Falguni"
+              subcaption="Lead Photographer & Mother · Lightsview Studio"
+              tapeVariant="kraft"
+              tapeAngle={1.5}
+              aspectRatio="aspect-square"
+            />
+          </div>
 
-        <div className="max-w-3xl mx-auto space-y-6 text-base sm:text-lg text-[#362E2B]/85 leading-relaxed">
-          <p>{intro.body_copy}</p>
-        </div>
+          <div className="lg:col-span-7 space-y-6 text-left order-1 lg:order-2">
+            <div className="space-y-2">
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#362E2B] font-normal">
+                {intro.headline}
+              </h2>
+              <p className="font-display text-lg sm:text-xl text-[#6E4E53] italic">
+                A calm, unhurried space tailored entirely to your baby.
+              </p>
+            </div>
 
-        <div className="mt-8 flex justify-center">
-          <button
-            onClick={() => onNavigate('/about')}
-            className="px-7 py-3 rounded-full border border-[#9CAA8C] text-[#362E2B] text-sm hover:bg-[#EAD3CE]/30 transition-colors inline-flex items-center gap-2"
-          >
-            <span>{intro.cta_text}</span>
-            <ArrowRight size={16} weight="light" />
-          </button>
+            <div className="space-y-4 text-base sm:text-lg text-[#362E2B]/85 leading-relaxed">
+              <p>{intro.body_copy}</p>
+              <p className="text-sm text-[#6E4E53]/90 italic">
+                &ldquo;Sessions move strictly to baby cues. Never watching a timer or cutting off a feed.&rdquo;
+              </p>
+            </div>
+
+            <div className="pt-2">
+              <button
+                onClick={() => onNavigate('/about')}
+                className="px-7 py-3 rounded-full border border-[#9CAA8C] text-[#362E2B] text-sm hover:bg-[#EAD3CE]/30 transition-colors inline-flex items-center gap-2 cursor-pointer"
+              >
+                <span>{intro.cta_text}</span>
+                <ArrowRight size={16} weight="light" />
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -350,56 +375,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       {/* Signature Ribbon Divider */}
       <RibbonDivider />
 
-      {/* 4. TESTIMONIALS SECTION: Real Attributed Google Reviews */}
-      <section className="py-20 max-w-6xl mx-auto px-6 lg:px-12">
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-2">
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#362E2B] font-normal">
-            {testimonials.headline}
-          </h2>
-          <p className="font-display text-lg sm:text-xl text-[#6E4E53] italic">
-            {testimonials.subheadline}
-          </p>
-        </div>
-
-        {/* Real review quotes in restrained, tactile asymmetric layout */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-[#FAF5EF] border border-[#EAD3CE] rounded-[20px] p-8 shadow-xs flex flex-col justify-between">
-            <p className="text-base text-[#362E2B]/85 italic leading-relaxed mb-6 font-display text-lg">
-              &ldquo;She is really very nice. Very cooperative and warm welcoming behaviour of her and family. Really recommend.&rdquo;
-            </p>
-            <div className="pt-4 border-t border-[#EAD3CE]/40">
-              <span className="caption-text text-[#6E4E53] font-semibold block">
-                Harmandeep K.
-              </span>
-              <span className="text-xs text-[#9CAA8C]">Google Review</span>
-            </div>
-          </div>
-
-          <div className="bg-[#FAF5EF] border border-[#EAD3CE] rounded-[20px] p-8 shadow-xs flex flex-col justify-between md:-translate-y-3">
-            <p className="text-base text-[#362E2B]/85 italic leading-relaxed mb-6 font-display text-lg">
-              &ldquo;I am happy with experience of getting my 5 weeks baby photoshoot done by Falguni. She is excellent, amazing and wonderful.&rdquo;
-            </p>
-            <div className="pt-4 border-t border-[#EAD3CE]/40">
-              <span className="caption-text text-[#6E4E53] font-semibold block">
-                Prabhjot G.
-              </span>
-              <span className="text-xs text-[#9CAA8C]">Google Review</span>
-            </div>
-          </div>
-
-          <div className="bg-[#FAF5EF] border border-[#EAD3CE] rounded-[20px] p-8 shadow-xs flex flex-col justify-between">
-            <p className="text-base text-[#362E2B]/85 italic leading-relaxed mb-6 font-display text-lg">
-              &ldquo;Very professional and very calm, especially needed this kind of patience when it is newborns or month old baby&apos;s photoshoot.&rdquo;
-            </p>
-            <div className="pt-4 border-t border-[#EAD3CE]/40">
-              <span className="caption-text text-[#6E4E53] font-semibold block">
-                Gurpreet S.
-              </span>
-              <span className="text-xs text-[#9CAA8C]">Google Review</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* 4. SOCIAL PROOF & CLIENT REVIEWS SECTION */}
+      <ReviewsSection id="reviews" defaultLayout="carousel" />
 
       {/* Signature Ribbon Divider */}
       <RibbonDivider />
