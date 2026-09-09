@@ -1,478 +1,406 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ChatCircleDots, X, PaperPlaneRight, CalendarCheck, CheckCircle, Sparkle } from '@phosphor-icons/react';
-import { ChatMessage } from '../types';
-import { getApiUrl } from '../utils/api';
+import React, { useState, useEffect, useRef } from "react";
+import { 
+  ChatCircleDots, 
+  X, 
+  PaperPlaneRight, 
+  Sparkle, 
+  CheckCircle, 
+  ArrowClockwise,
+  CalendarCheck,
+  Phone
+} from "@phosphor-icons/react";
+import { AnimatePresence, motion } from "motion/react";
+import { getApiUrl } from "../utils/api";
+
+export interface WillowMessage {
+  id: string;
+  role: "user" | "model";
+  text: string;
+  timestamp: Date;
+  isBookingTrigger?: boolean;
+}
+
+export interface WillowBookingData {
+  id?: string;
+  customerName: string;
+  customerEmail: string;
+  phone: string;
+  sessionType: string;
+  timeframeOrDueDate?: string;
+  notes?: string;
+}
 
 interface WillowAssistantProps {
   onSessionSelect?: (service: string) => void;
+  openInitially?: boolean;
 }
 
-export const WillowAssistant: React.FC<WillowAssistantProps> = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [hasUnread, setHasUnread] = useState(false);
-  const [input, setInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [conversationId, setConversationId] = useState<string>('');
-  const [showBookingForm, setShowBookingForm] = useState(false);
-  const [bookingSuccess, setBookingSuccess] = useState(false);
-  const [bookingLoading, setBookingLoading] = useState(false);
-
-  // In-chat booking state
-  const [clientName, setClientName] = useState('');
-  const [clientEmail, setClientEmail] = useState('');
-  const [clientPhone, setClientPhone] = useState('');
-  const [sessionType, setSessionType] = useState('Newborn Photography');
-  const [timeframe, setTimeframe] = useState('');
-  const [bookingNotes, setBookingNotes] = useState('');
-
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'welcome-1',
-      sender: 'assistant',
-      text: "Hello, I'm Willow. I help new and expecting parents find the right session with Falguni here in Lightsview. You can ask me questions about pricing, timing, or book a session directly here.",
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    },
-  ]);
-
+export const WillowAssistant: React.FC<WillowAssistantProps> = ({ openInitially = false }) => {
+  const [isOpen, setIsOpen] = useState(openInitially);
+  const [messages, setMessages] = useState<WillowMessage[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!conversationId) {
-      const id = 'conv_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
-      setConversationId(id);
-    }
-  }, [conversationId]);
+  const initializeWelcomeMessage = () => {
+    const welcome: WillowMessage = {
+      id: "welcome",
+      role: "model",
+      text: "Hello, I'm Willow. I help new and expecting parents find the right session with Falguni here at our home studio in Lightsview, Adelaide.\n\nEvery session starts at $300 and moves at your baby's gentle pace with plenty of time for feeding and cuddles. How can I help you today?",
+      timestamp: new Date(),
+    };
+    setMessages([welcome]);
+  };
 
-  // Global event listener to allow other components (like hero CTA or quick checker) to open Willow
+  // Load chat history from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("willow_chat_history");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setMessages(
+          parsed.map((m: any) => ({
+            ...m,
+            timestamp: new Date(m.timestamp),
+          }))
+        );
+      } catch {
+        initializeWelcomeMessage();
+      }
+    } else {
+      initializeWelcomeMessage();
+    }
+  }, []);
+
+  // Save chat to localStorage on changes
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem("willow_chat_history", JSON.stringify(messages));
+    }
+  }, [messages]);
+
+  // Auto scroll to bottom
+  useEffect(() => {
+    if (isOpen) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isLoading, isOpen]);
+
+  // Global event listener to allow buttons across the site to open Willow with a prompt
   useEffect(() => {
     const handleOpenWillow = (event: any) => {
       setIsOpen(true);
-      setHasUnread(false);
       const detail = event?.detail;
       if (detail?.prompt) {
-        handleSend(detail.prompt);
-      } else if (detail?.openBooking) {
-        setShowBookingForm(true);
-        if (detail.sessionType) setSessionType(detail.sessionType);
-        if (detail.timeframe) setTimeframe(detail.timeframe);
+        handleSendMessage(detail.prompt);
       }
     };
 
-    window.addEventListener('open-willow', handleOpenWillow);
-    return () => window.removeEventListener('open-willow', handleOpenWillow);
-  }, [conversationId, messages]);
+    window.addEventListener("open-willow", handleOpenWillow);
+    return () => window.removeEventListener("open-willow", handleOpenWillow);
+  }, [messages, isLoading]);
 
-  useEffect(() => {
-    if (isOpen) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages, isOpen, showBookingForm, bookingSuccess]);
+  const clearChat = () => {
+    localStorage.removeItem("willow_chat_history");
+    initializeWelcomeMessage();
+  };
 
-  const handleSend = async (customText?: string) => {
-    const userText = (customText || input).trim();
-    if (!userText || isTyping) return;
+  const handleSendMessage = async (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed || isLoading) return;
 
-    // Check if user clicked book prompt
-    if (userText.toLowerCase() === "i'd like to book a session" || userText.toLowerCase() === "book a session") {
-      setShowBookingForm(true);
-    }
-
-    const userMessage: ChatMessage = {
-      id: 'user_' + Date.now(),
-      sender: 'user',
-      text: userText,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    const userMessage: WillowMessage = {
+      id: "usr_" + Math.random().toString(36).substring(2, 9),
+      role: "user",
+      text: trimmed,
+      timestamp: new Date(),
     };
 
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
-    setInput('');
-    setIsTyping(true);
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue("");
+    setIsLoading(true);
 
     try {
-      const response = await fetch(getApiUrl('/api/assistant/chat'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      // Map history for Gemini
+      const history = messages.map((m) => ({
+        role: m.role,
+        parts: [{ text: m.text }],
+      }));
+
+      const res = await fetch(getApiUrl("/api/chat"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          conversationId,
-          messages: updatedMessages,
-          latestMessage: userText,
+          message: trimmed,
+          history,
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to reach assistant server');
+      if (!res.ok) {
+        throw new Error(`Server returned status ${res.status}`);
       }
 
-      const data = await response.json();
-      const botMessage: ChatMessage = {
-        id: 'bot_' + Date.now(),
-        sender: 'assistant',
-        text: data.reply || "Thanks for sharing. Falguni loves working with little ones at their own pace. Would you like to check available dates for your session?",
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      const data = await res.json();
+      let replyText = data.text || data.reply || "Thank you for sharing. Falguni loves working with little ones at their own pace. Would you like to check dates?";
+
+      // Check if response contains a [BOOKING_DATA: ...] trigger
+      const bookingMatch = replyText.match(/\[BOOKING_DATA:\s*({.*?})\]/);
+      let extractedBooking: WillowBookingData | null = null;
+
+      if (bookingMatch) {
+        try {
+          extractedBooking = JSON.parse(bookingMatch[1]);
+          // Clean the tag from displayed chat text
+          replyText = replyText.replace(/\[BOOKING_DATA:\s*({.*?})\]/, "").trim();
+        } catch (e) {
+          console.error("Failed to parse booking JSON:", e);
+        }
+      }
+
+      const modelMessage: WillowMessage = {
+        id: "bot_" + Math.random().toString(36).substring(2, 9),
+        role: "model",
+        text: replyText,
+        timestamp: new Date(),
+        isBookingTrigger: !!extractedBooking,
       };
 
-      setMessages((prev) => [...prev, botMessage]);
+      setMessages((prev) => [...prev, modelMessage]);
 
-      if (data.bookingCreated) {
-        setBookingSuccess(true);
-        const confirmMsg: ChatMessage = {
-          id: 'bot_confirm_' + Date.now(),
-          sender: 'assistant',
-          text: `Your booking request has been sent to Falguni. She will check her studio schedule and reply within 24 hours to confirm your date.`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      if (extractedBooking) {
+        const newBooking = {
+          ...extractedBooking,
+          id: "book_" + Math.random().toString(36).substring(2, 9),
+          createdAt: new Date().toISOString(),
         };
-        setMessages((prev) => [...prev, confirmMsg]);
+
+        // Save booking into local storage
+        const currentRaw = localStorage.getItem("falguni_studio_bookings");
+        const currentList = currentRaw ? JSON.parse(currentRaw) : [];
+        currentList.push(newBooking);
+        localStorage.setItem("falguni_studio_bookings", JSON.stringify(currentList));
+
+        // Trigger email notification via backend
+        fetch(getApiUrl("/api/book"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newBooking),
+        }).catch((mailErr) => {
+          console.warn("Notice: could not dispatch email notification:", mailErr);
+        });
+
+        // Add confirmed appointment inquiry message in chat
+        setTimeout(() => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: "bot_confirm_" + Math.random().toString(36).substring(2, 9),
+              role: "model",
+              text: `📷 **Booking Inquiry Sent to Falguni**\n\n**Parent:** ${newBooking.customerName}\n**Session:** ${newBooking.sessionType}\n**Due Date / Timeframe:** ${newBooking.timeframeOrDueDate || "Flexible"}\n${newBooking.customerEmail ? `**Email:** ${newBooking.customerEmail}\n` : ""}**Phone:** ${newBooking.phone || "Not specified"}\n\nFalguni has received your details and will follow up personally within 24 hours to confirm your session date and answer any questions!`,
+              timestamp: new Date(),
+            },
+          ]);
+        }, 600);
       }
-    } catch (err) {
-      console.warn('Willow chat backend notice:', err);
-      let fallback = "Every session at Falguni's home studio starts at $300 and moves strictly at your baby's pace. Would you like to book a date or check timing?";
-      if (userText.toLowerCase().includes('price') || userText.toLowerCase().includes('cost')) {
-        fallback = "All sessions start at $300. For newborns, that covers a gentle two-hour session, two wrap outfits, and six fully edited photos. Would you like to hold a date?";
-      } else if (userText.toLowerCase().includes('when') || userText.toLowerCase().includes('newborn')) {
-        fallback = "For newborns, five to twenty days old is the sweet spot when babies sleep deepest. If you'd like, what is your due date so we can note it down for Falguni?";
+    } catch (error) {
+      console.error("Error sending message to Willow:", error);
+      let fallbackText = "Every session at Falguni's home studio in Lightsview starts at $300 and moves strictly at your baby's pace. Would you like to check dates around your timeframe?";
+      const lower = trimmed.toLowerCase();
+      if (lower.includes("price") || lower.includes("cost")) {
+        fallbackText = "All sessions start at $300. For newborns, that covers a gentle two-hour session, two wrap outfits, and six fully edited photos. Would you like to hold a date?";
+      } else if (lower.includes("when") || lower.includes("newborn")) {
+        fallbackText = "For newborns, five to twenty days old is the sweet spot when babies sleep deepest. If you'd like, what is your due date so Falguni can note it down?";
       }
 
       setMessages((prev) => [
         ...prev,
         {
-          id: 'bot_fallback_' + Date.now(),
-          sender: 'assistant',
-          text: fallback,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          id: "bot_err_" + Math.random().toString(36).substring(2, 9),
+          role: "model",
+          text: fallbackText,
+          timestamp: new Date(),
         },
       ]);
     } finally {
-      setIsTyping(false);
-    }
-  };
-
-  const handleInChatBookingSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!clientName.trim() || !clientEmail.trim()) return;
-
-    setBookingLoading(true);
-    try {
-      const res = await fetch(getApiUrl('/api/assistant/book'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          conversationId,
-          name: clientName.trim(),
-          email: clientEmail.trim(),
-          phone: clientPhone.trim(),
-          sessionType,
-          timeframeOrDueDate: timeframe.trim() || 'Not specified',
-          notes: bookingNotes.trim(),
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error('Could not submit booking');
-      }
-
-      setBookingSuccess(true);
-      setShowBookingForm(false);
-
-      // Append confirmation to chat
-      const confirmMessage: ChatMessage = {
-        id: 'bot_booked_' + Date.now(),
-        sender: 'assistant',
-        text: `Thank you, ${clientName}. Your booking request for a ${sessionType} session (${timeframe || 'flexible date'}) has been sent to Falguni. She will check her studio calendar and reply to ${clientEmail} within 24 hours.`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      };
-
-      setMessages((prev) => [...prev, confirmMessage]);
-    } catch (err) {
-      console.error('Chat booking error:', err);
-      alert('Could not submit booking right now. Please try again or use our contact form.');
-    } finally {
-      setBookingLoading(false);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSend();
+      setIsLoading(false);
     }
   };
 
   const quickPrompts = [
-    "Book a session with Falguni",
-    "When is the best newborn window?",
-    "How much does a session cost?",
-    "What is included in $300?",
+    { label: "Best newborn window?", text: "When is the best time to book newborn photos?" },
+    { label: "Session pricing ($300)", text: "How much does a session cost and what is included?" },
+    { label: "Book with Falguni", text: "I'd like to book a photography session for my baby." },
+    { label: "Where is the studio?", text: "Where is Falguni's studio located in Adelaide?" },
   ];
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
-      {/* Assistant Modal Window */}
-      {isOpen ? (
-        <div className="w-[92vw] sm:w-[400px] h-[550px] bg-[#FAF5EF] rounded-[22px] border border-[#EAD3CE] shadow-2xl flex flex-col overflow-hidden text-[#362E2B] animate-in fade-in zoom-in-95 duration-200">
-          {/* Header */}
-          <div className="bg-[#FAF5EF] px-5 py-3.5 border-b border-[#EAD3CE] flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-[#9CAA8C]/25 flex items-center justify-center text-[#6E4E53] font-medium text-sm">
-                W
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <h3 className="font-display text-lg text-[#362E2B] font-medium leading-none">
+    <>
+      {/* Floating Action Button */}
+      <motion.button
+        id="willow-floating-button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#6E4E53] text-[#FAF5EF] shadow-2xl hover:bg-[#5A3F43] transition-colors cursor-pointer border border-[#FAF5EF]/20"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        aria-label="Open Willow Studio Assistant"
+      >
+        {isOpen ? (
+          <X size={24} weight="regular" />
+        ) : (
+          <div className="relative">
+            <ChatCircleDots size={26} weight="regular" />
+            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#9CAA8C] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#9CAA8C]"></span>
+            </span>
+          </div>
+        )}
+      </motion.button>
+
+      {/* Chat Window */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            id="willow-chat-window"
+            initial={{ opacity: 0, y: 30, scale: 0.92 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 30, scale: 0.92 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="fixed bottom-24 right-4 sm:right-6 z-50 flex h-[580px] w-[calc(100vw-2rem)] max-w-[400px] flex-col rounded-[24px] bg-[#FAF5EF] border border-[#EAD3CE] shadow-2xl overflow-hidden text-[#362E2B]"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between bg-[#6E4E53] px-4 py-3.5 text-[#FAF5EF]">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FAF5EF]/15 text-[#FAF5EF] font-display font-medium text-base">
+                  W
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-medium tracking-tight leading-none text-[#FAF5EF]">
                     Willow
                   </h3>
-                  <span className="inline-flex items-center gap-0.5 text-[10px] text-[#6E4E53] bg-[#EAD3CE]/40 px-1.5 py-0.5 rounded-full font-medium">
-                    <Sparkle size={10} weight="fill" />
-                    Assistant
-                  </span>
-                </div>
-                <span className="caption-text text-[10px] text-[#9CAA8C]">
-                  Falguni's Studio &middot; Lightsview Adelaide
-                </span>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => setShowBookingForm(!showBookingForm)}
-                className={`text-xs px-2.5 py-1 rounded-full border transition-colors flex items-center gap-1 ${
-                  showBookingForm
-                    ? 'bg-[#6E4E53] text-[#FAF5EF] border-[#6E4E53]'
-                    : 'border-[#9CAA8C] text-[#6E4E53] hover:bg-[#EAD3CE]/30'
-                }`}
-                title="Toggle booking intake form"
-              >
-                <CalendarCheck size={14} weight="regular" />
-                <span>{showBookingForm ? 'Chat' : 'Book'}</span>
-              </button>
-
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-1.5 text-[#362E2B]/60 hover:text-[#6E4E53] rounded-full hover:bg-[#EAD3CE]/40 transition-colors"
-                aria-label="Close Willow Assistant"
-              >
-                <X size={18} weight="light" />
-              </button>
-            </div>
-          </div>
-
-          {/* In-Chat Quick Booking Form Overlay/Panel */}
-          {showBookingForm ? (
-            <div className="flex-1 overflow-y-auto p-4 bg-[#FAF5EF] text-sm">
-              <div className="bg-white/80 border border-[#EAD3CE] rounded-xl p-4 shadow-sm space-y-3">
-                <div className="border-b border-[#EAD3CE]/60 pb-2">
-                  <h4 className="font-display text-base text-[#6E4E53] font-medium">
-                    Book Directly with Falguni
-                  </h4>
-                  <p className="text-xs text-[#362E2B]/70">
-                    Sessions start at $300. Falguni will follow up within 24 hours to confirm your date.
+                  <p className="text-[11px] text-[#EAD3CE] flex items-center gap-1 font-sans mt-0.5">
+                    <Sparkle size={11} weight="fill" className="text-[#EAD3CE]" />
+                    Falguni's Studio &middot; Lightsview Adelaide
                   </p>
                 </div>
-
-                <form onSubmit={handleInChatBookingSubmit} className="space-y-2.5">
-                  <div>
-                    <label className="block text-[11px] font-medium text-[#362E2B]/80 mb-0.5">Your Name *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Sarah Jenkins"
-                      value={clientName}
-                      onChange={(e) => setClientName(e.target.value)}
-                      className="w-full px-3 py-1.5 text-xs rounded-lg border border-[#EAD3CE] focus:outline-none focus:border-[#9CAA8C] bg-[#FAF5EF]/50"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="block text-[11px] font-medium text-[#362E2B]/80 mb-0.5">Email *</label>
-                      <input
-                        type="email"
-                        required
-                        placeholder="sarah@example.com"
-                        value={clientEmail}
-                        onChange={(e) => setClientEmail(e.target.value)}
-                        className="w-full px-3 py-1.5 text-xs rounded-lg border border-[#EAD3CE] focus:outline-none focus:border-[#9CAA8C] bg-[#FAF5EF]/50"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-medium text-[#362E2B]/80 mb-0.5">Phone (optional)</label>
-                      <input
-                        type="tel"
-                        placeholder="0400 000 000"
-                        value={clientPhone}
-                        onChange={(e) => setClientPhone(e.target.value)}
-                        className="w-full px-3 py-1.5 text-xs rounded-lg border border-[#EAD3CE] focus:outline-none focus:border-[#9CAA8C] bg-[#FAF5EF]/50"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="block text-[11px] font-medium text-[#362E2B]/80 mb-0.5">Session Type</label>
-                      <select
-                        value={sessionType}
-                        onChange={(e) => setSessionType(e.target.value)}
-                        className="w-full px-2 py-1.5 text-xs rounded-lg border border-[#EAD3CE] focus:outline-none focus:border-[#9CAA8C] bg-[#FAF5EF]/50"
-                      >
-                        <option value="Newborn Photography">Newborn Session</option>
-                        <option value="Maternity Photography">Maternity Session</option>
-                        <option value="Family Photography">Family Session</option>
-                        <option value="Cake Smash Photography">Cake Smash Session</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-medium text-[#362E2B]/80 mb-0.5">Due Date / Target</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Mid November / 2 weeks"
-                        value={timeframe}
-                        onChange={(e) => setTimeframe(e.target.value)}
-                        className="w-full px-3 py-1.5 text-xs rounded-lg border border-[#EAD3CE] focus:outline-none focus:border-[#9CAA8C] bg-[#FAF5EF]/50"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-medium text-[#362E2B]/80 mb-0.5">Questions or notes (optional)</label>
-                    <textarea
-                      rows={2}
-                      placeholder="Any siblings or special requests..."
-                      value={bookingNotes}
-                      onChange={(e) => setBookingNotes(e.target.value)}
-                      className="w-full px-3 py-1.5 text-xs rounded-lg border border-[#EAD3CE] focus:outline-none focus:border-[#9CAA8C] bg-[#FAF5EF]/50"
-                    />
-                  </div>
-
-                  <div className="pt-1 flex gap-2">
-                    <button
-                      type="submit"
-                      disabled={bookingLoading}
-                      className="flex-1 py-2 rounded-lg bg-[#6E4E53] text-[#FAF5EF] text-xs font-medium hover:bg-[#583D42] disabled:opacity-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm"
-                    >
-                      <CalendarCheck size={14} weight="bold" />
-                      <span>{bookingLoading ? 'Sending...' : 'Confirm Booking Inquiry'}</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowBookingForm(false)}
-                      className="px-3 py-2 rounded-lg border border-[#EAD3CE] text-xs hover:bg-[#EAD3CE]/40 transition-colors text-[#362E2B]/70"
-                    >
-                      Back to Chat
-                    </button>
-                  </div>
-                </form>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={clearChat}
+                  className="rounded-full px-2 py-0.5 text-[11px] font-sans hover:bg-[#FAF5EF]/15 transition-all border border-[#FAF5EF]/20 text-[#FAF5EF]/80 flex items-center gap-1"
+                  title="Reset conversation"
+                >
+                  <ArrowClockwise size={11} />
+                  Reset
+                </button>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="rounded-full p-1.5 hover:bg-[#FAF5EF]/15 transition-colors text-[#FAF5EF]"
+                  aria-label="Close"
+                >
+                  <X size={16} />
+                </button>
               </div>
             </div>
-          ) : (
-            /* Standard Messages List */
-            <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-sm">
-              {messages.map((msg) => {
-                const isBot = msg.sender === 'assistant';
-                const isBookingNotice = msg.text.includes('Your booking request has been sent') || msg.text.includes('Thank you, ');
-                return (
+
+            {/* Message Area */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-[#FAF5EF]/60">
+              {messages.map((m) => (
+                <div
+                  key={m.id}
+                  className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                >
                   <div
-                    key={msg.id}
-                    className={`flex flex-col ${isBot ? 'items-start' : 'items-end'}`}
+                    className={`max-w-[85%] rounded-[18px] px-4 py-3 text-[13.5px] font-sans leading-relaxed shadow-sm whitespace-pre-line ${
+                      m.role === "user"
+                        ? "bg-[#6E4E53] text-[#FAF5EF] rounded-br-xs"
+                        : "bg-white text-[#362E2B] border border-[#EAD3CE]/50 rounded-bl-xs"
+                    }`}
                   >
+                    {m.text.split("**").map((part, index) => {
+                      if (index % 2 === 1) {
+                        return (
+                          <strong key={index} className="font-semibold text-inherit">
+                            {part}
+                          </strong>
+                        );
+                      }
+                      return part;
+                    })}
                     <div
-                      className={`max-w-[85%] px-4 py-3 rounded-2xl leading-relaxed text-sm ${
-                        isBookingNotice
-                          ? 'bg-[#9CAA8C]/20 border border-[#9CAA8C]/50 text-[#362E2B] rounded-tl-sm font-medium'
-                          : isBot
-                          ? 'bg-[#EAD3CE]/35 text-[#362E2B] rounded-tl-sm border border-[#EAD3CE]/60'
-                          : 'bg-[#6E4E53] text-[#FAF5EF] rounded-tr-sm'
+                      className={`text-[10px] mt-1.5 text-right block ${
+                        m.role === "user" ? "text-[#FAF5EF]/60" : "text-[#362E2B]/40"
                       }`}
                     >
-                      {msg.text}
+                      {m.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                     </div>
-                    <span className="text-[10px] text-[#362E2B]/40 px-1 mt-1">
-                      {msg.timestamp}
-                    </span>
                   </div>
-                );
-              })}
+                </div>
+              ))}
 
-              {isTyping && (
-                <div className="flex items-center gap-1.5 text-xs text-[#9CAA8C] italic px-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#9CAA8C] animate-bounce" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#9CAA8C] animate-bounce [animation-delay:0.2s]" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#9CAA8C] animate-bounce [animation-delay:0.4s]" />
-                  <span className="ml-1 text-[11px]">Willow is replying...</span>
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="max-w-[85%] rounded-[18px] rounded-bl-xs px-4 py-3 bg-white text-[#362E2B] border border-[#EAD3CE]/50 shadow-sm flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-[#6E4E53] animate-bounce [animation-delay:-0.3s]"></span>
+                    <span className="h-2 w-2 rounded-full bg-[#6E4E53] animate-bounce [animation-delay:-0.15s]"></span>
+                    <span className="h-2 w-2 rounded-full bg-[#6E4E53] animate-bounce"></span>
+                  </div>
                 </div>
               )}
               <div ref={messagesEndRef} />
             </div>
-          )}
 
-          {/* Quick Prompts */}
-          {!showBookingForm && messages.length < 6 && (
-            <div className="px-4 py-2 border-t border-[#EAD3CE]/40 flex gap-1.5 overflow-x-auto no-scrollbar">
-              {quickPrompts.map((prompt, i) => (
-                <button
-                  key={i}
-                  onClick={() => {
-                    if (prompt.includes("Book a session")) {
-                      setShowBookingForm(true);
-                    } else {
-                      handleSend(prompt);
-                    }
-                  }}
-                  className="whitespace-nowrap px-2.5 py-1 text-xs rounded-full bg-[#EAD3CE]/40 text-[#6E4E53] hover:bg-[#EAD3CE] transition-colors shrink-0 flex items-center gap-1"
-                >
-                  {prompt.includes("Book") && <CalendarCheck size={12} weight="bold" />}
-                  <span>{prompt}</span>
-                </button>
-              ))}
-            </div>
-          )}
+            {/* Quick Prompts */}
+            {messages.length <= 2 && (
+              <div className="px-3.5 py-2.5 bg-[#EAD3CE]/20 border-t border-[#EAD3CE]/40">
+                <p className="text-[11px] text-[#6E4E53] font-sans font-medium mb-1.5">
+                  Popular questions:
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {quickPrompts.map((p, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleSendMessage(p.text)}
+                      className="rounded-full bg-white px-2.5 py-1 text-xs text-[#6E4E53] border border-[#EAD3CE] hover:border-[#6E4E53] hover:bg-[#FAF5EF] transition-colors text-left cursor-pointer font-sans"
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
-          {/* Input Box */}
-          {!showBookingForm && (
-            <div className="p-3 bg-[#FAF5EF] border-t border-[#EAD3CE] flex items-center gap-2">
+            {/* Input Form */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSendMessage(inputValue);
+              }}
+              className="flex items-center gap-2 border-t border-[#EAD3CE] bg-white p-3"
+            >
               <input
                 type="text"
-                placeholder="Ask Willow about dates, pricing, or say 'book'..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                disabled={isTyping}
-                className="flex-1 px-3.5 py-2.5 rounded-full border border-[#EAD3CE] bg-[#FAF5EF] text-sm text-[#362E2B] focus:outline-none focus:border-[#9CAA8C] placeholder:text-[#362E2B]/40"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Ask Willow about sessions, pricing, or dates..."
+                disabled={isLoading}
+                className="flex-1 rounded-full bg-[#FAF5EF] px-4 py-2 text-xs sm:text-sm text-[#362E2B] border border-[#EAD3CE] placeholder-[#362E2B]/40 focus:border-[#6E4E53] focus:outline-none focus:ring-1 focus:ring-[#6E4E53]"
               />
               <button
-                onClick={() => handleSend()}
-                disabled={!input.trim() || isTyping}
-                className="w-9 h-9 rounded-full bg-[#6E4E53] text-[#FAF5EF] flex items-center justify-center hover:bg-[#583D42] disabled:opacity-40 transition-colors shrink-0"
+                type="submit"
+                disabled={!inputValue.trim() || isLoading}
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-[#6E4E53] text-[#FAF5EF] hover:bg-[#5A3F43] transition-all disabled:opacity-40 disabled:hover:bg-[#6E4E53] cursor-pointer"
                 aria-label="Send message"
               >
-                <PaperPlaneRight size={16} weight="light" />
+                <PaperPlaneRight size={16} weight="bold" />
               </button>
-            </div>
-          )}
-        </div>
-      ) : (
-        /* Minimized Floating Button */
-        <button
-          onClick={() => {
-            setIsOpen(true);
-            setHasUnread(false);
-          }}
-          className="group relative flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#6E4E53] text-[#FAF5EF] shadow-lg hover:bg-[#583D42] transition-all hover:scale-102 focus:outline-none focus:ring-2 focus:ring-[#9CAA8C]"
-          aria-label="Chat with Willow or Book"
-        >
-          <ChatCircleDots size={22} weight="light" />
-          <div className="flex flex-col text-left">
-            <span className="text-sm font-medium tracking-wide leading-none">
-              Chat & Book with Willow
-            </span>
-            <span className="text-[10px] text-[#FAF5EF]/80 leading-tight mt-0.5">
-              Instant Answers &middot; Hold a Date
-            </span>
-          </div>
-          {hasUnread && (
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#9CAA8C] rounded-full border-2 border-[#FAF5EF]" />
-          )}
-        </button>
-      )}
-    </div>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
+export default WillowAssistant;

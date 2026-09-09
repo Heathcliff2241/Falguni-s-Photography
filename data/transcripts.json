@@ -1,5 +1,35 @@
 [
   {
+    "id": "conv_1788930267288",
+    "createdAt": "2026-09-09T05:04:32.531Z",
+    "summary": "Inquiry chat",
+    "messages": [
+      {
+        "id": "bot_1788930272531",
+        "sender": "assistant",
+        "text": "Hello! It's lovely to meet you. How can I help you today? Whether you're thinking about photos for a new little arrival, a family session, or just have a few questions, I'm here to help.",
+        "timestamp": "05:04 AM"
+      }
+    ]
+  },
+  {
+    "id": "test-chat-1",
+    "createdAt": "2026-09-09T05:04:22.487Z",
+    "summary": "Hi Willow, what is the address of the studio?",
+    "messages": [
+      {
+        "sender": "user",
+        "text": "Hi Willow, what is the address of the studio?"
+      },
+      {
+        "id": "bot_1788930262474",
+        "sender": "assistant",
+        "text": "Hello! The studio is located at 26 South Pkwy, Northfield SA 5085, right in the Lightsview and Northfield area here in Adelaide. \n\nAre you looking into a session for your family or a little one on the way?",
+        "timestamp": "05:04 AM"
+      }
+    ]
+  },
+  {
     "id": "test-123",
     "createdAt": "2026-09-09T04:56:06.866Z",
     "summary": "Hello Willow! How much is a newborn session?",

@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "phone": "0412345678",
+    "sessionType": "Newborn Photography",
+    "timeframeOrDueDate": "October 2026",
+    "notes": "Looking forward to booking!",
+    "source": "form",
+    "id": "inq_1788930278068_3yeu",
+    "createdAt": "2026-09-09T05:04:38.068Z",
+    "status": "new"
+  }
+]
