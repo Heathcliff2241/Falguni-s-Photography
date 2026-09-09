@@ -50,6 +50,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       timing: "5 to 20 days old",
       tagline: "Two hours unhurried, two wrap outfits, feeding breaks built in.",
       image: CLIENT_PHOTOS.newborn.src,
+      fallbackSrc: CLIENT_PHOTOS.newborn.fallbackSrc,
       alt: CLIENT_PHOTOS.newborn.alt,
       caption: "Gentle Newborn Studio Session",
       subcaption: "Newborn Session",
@@ -62,6 +63,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       timing: "28 to 34 weeks",
       tagline: "Soft, unposed bump portraits in warm natural studio light.",
       image: CLIENT_PHOTOS.maternity.src,
+      fallbackSrc: CLIENT_PHOTOS.maternity.fallbackSrc,
       alt: CLIENT_PHOTOS.maternity.alt,
       caption: "Studio Light Maternity Portrait",
       subcaption: "Maternity Session",
@@ -74,6 +76,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       timing: "All ages & sitter sessions",
       tagline: "Real interaction and patience with young kids, in studio or nearby park.",
       image: CLIENT_PHOTOS.family.src,
+      fallbackSrc: CLIENT_PHOTOS.family.fallbackSrc,
       alt: CLIENT_PHOTOS.family.alt,
       caption: "Unhurried Family Connection",
       subcaption: "Family Session",
@@ -86,6 +89,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       timing: "First birthday",
       tagline: "A messy, joyful milestone session with full studio cleanup included.",
       image: CLIENT_PHOTOS.cakeSmash.src,
+      fallbackSrc: CLIENT_PHOTOS.cakeSmash.fallbackSrc,
       alt: CLIENT_PHOTOS.cakeSmash.alt,
       caption: "First Birthday Celebration",
       subcaption: "Cake Smash",
@@ -217,6 +221,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             <div className="relative">
               <PolaroidPhoto
                 src={CLIENT_PHOTOS.newborn.src}
+                fallbackSrc={CLIENT_PHOTOS.newborn.fallbackSrc}
                 alt={hero.image_alt_text || CLIENT_PHOTOS.newborn.alt}
                 caption="Gentle Newborn Studio Session"
                 subcaption="Lightsview Home Studio &middot; 5 to 20 Days Old"
@@ -324,6 +329,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               <div className="pt-2 pb-6">
                 <PolaroidPhoto
                   src={card.image}
+                  fallbackSrc={card.fallbackSrc}
                   alt={card.alt}
                   caption={card.caption}
                   subcaption={card.timing}

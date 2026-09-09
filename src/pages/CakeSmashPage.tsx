@@ -63,7 +63,8 @@ export const CakeSmashPage: React.FC<CakeSmashPageProps> = ({ onNavigate }) => {
 
           <div className="lg:col-span-5 flex justify-center">
             <PolaroidPhoto
-              src={CLIENT_PHOTOS.photo2.src}
+              src={CLIENT_PHOTOS.cakeSmash.src}
+              fallbackSrc={CLIENT_PHOTOS.cakeSmash.fallbackSrc}
               alt={hero.image_alt_text || "One-year-old baby birthday celebration milestone session"}
               caption="First Birthday Milestone"
               subcaption="Cake Smash & Bath"

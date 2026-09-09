@@ -62,6 +62,7 @@ export const NewbornPage: React.FC<NewbornPageProps> = ({ onNavigate }) => {
           <div className="lg:col-span-5 flex justify-center">
             <PolaroidPhoto
               src={CLIENT_PHOTOS.newborn.src}
+              fallbackSrc={CLIENT_PHOTOS.newborn.fallbackSrc}
               alt={hero.image_alt_text || CLIENT_PHOTOS.newborn.alt}
               caption="Unhurried Newborn Session"
               subcaption="5 to 20 Days Old"

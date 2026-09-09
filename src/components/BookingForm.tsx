@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CheckCircle, ArrowRight } from '@phosphor-icons/react';
+import { getApiUrl } from '../utils/api';
 
 interface BookingFormProps {
   defaultSessionType?: string;
@@ -30,7 +31,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
     setError('');
 
     try {
-      const response = await fetch('/api/inquiry', {
+      const response = await fetch(getApiUrl('/api/inquiry'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

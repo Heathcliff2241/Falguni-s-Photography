@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, ChatCircleDots, CalendarCheck, Clock, EnvelopeSimple, Phone, ArrowLeft } from '@phosphor-icons/react';
 import { BookingInquiry, ConversationTranscript } from '../types';
+import { getApiUrl } from '../utils/api';
 
 interface AdminPageProps {
   onNavigate: (path: string) => void;
@@ -16,7 +17,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onNavigate }) => {
   const fetchAdminData = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/data');
+      const res = await fetch(getApiUrl('/api/admin/data'));
       if (res.ok) {
         const data = await res.json();
         setInquiries(data.inquiries || []);

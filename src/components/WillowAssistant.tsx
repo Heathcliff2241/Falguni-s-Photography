@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChatCircleDots, X, PaperPlaneRight, CalendarCheck, CheckCircle, Sparkle } from '@phosphor-icons/react';
 import { ChatMessage } from '../types';
+import { getApiUrl } from '../utils/api';
 
 interface WillowAssistantProps {
   onSessionSelect?: (service: string) => void;
@@ -89,7 +90,7 @@ export const WillowAssistant: React.FC<WillowAssistantProps> = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch('/api/assistant/chat', {
+      const response = await fetch(getApiUrl('/api/assistant/chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -152,7 +153,7 @@ export const WillowAssistant: React.FC<WillowAssistantProps> = () => {
 
     setBookingLoading(true);
     try {
-      const res = await fetch('/api/assistant/book', {
+      const res = await fetch(getApiUrl('/api/assistant/book'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

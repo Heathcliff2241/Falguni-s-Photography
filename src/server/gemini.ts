@@ -67,17 +67,32 @@ export async function askWillow(messages: { sender: string; text: string }[]): P
       parts: [{ text: m.text }]
     }));
 
-    const response = await client.models.generateContent({
-      model: 'gemini-3.8-flash',
-      contents,
-      config: {
-        systemInstruction: WILLOW_SYSTEM_INSTRUCTION,
-        temperature: 0.6,
-        maxOutputTokens: 300,
-      }
-    });
+    let reply: string | undefined;
+    try {
+      const response = await client.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents,
+        config: {
+          systemInstruction: WILLOW_SYSTEM_INSTRUCTION,
+          temperature: 0.6,
+          maxOutputTokens: 300,
+        }
+      });
+      reply = response.text?.trim();
+    } catch (primaryErr) {
+      console.warn('[Gemini gemini-2.5-flash error, trying fallback]:', primaryErr);
+      const fallbackResponse = await client.models.generateContent({
+        model: 'gemini-3.8-flash',
+        contents,
+        config: {
+          systemInstruction: WILLOW_SYSTEM_INSTRUCTION,
+          temperature: 0.6,
+          maxOutputTokens: 300,
+        }
+      });
+      reply = fallbackResponse.text?.trim();
+    }
 
-    const reply = response.text?.trim();
     return reply || "Thanks for your message. Falguni would love to help capture these early days. Would you like to share your baby's due date or age?";
   } catch (error) {
     console.warn('[Gemini API Willow error]:', error);
@@ -141,14 +156,26 @@ ${fullText}
 
 Return ONLY valid raw JSON, without markdown blocks.`;
 
-      const result = await client.models.generateContent({
-        model: 'gemini-3.8-flash',
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        config: {
-          temperature: 0.1,
-          responseMimeType: 'application/json',
-        }
-      });
+      let result;
+      try {
+        result = await client.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          config: {
+            temperature: 0.1,
+            responseMimeType: 'application/json',
+          }
+        });
+      } catch {
+        result = await client.models.generateContent({
+          model: 'gemini-3.8-flash',
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          config: {
+            temperature: 0.1,
+            responseMimeType: 'application/json',
+          }
+        });
+      }
 
       const parsed = JSON.parse(result.text || '{}');
       return {

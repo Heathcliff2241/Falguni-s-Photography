@@ -61,8 +61,9 @@ export const MaternityPage: React.FC<MaternityPageProps> = ({ onNavigate }) => {
 
           <div className="lg:col-span-5 flex justify-center">
             <PolaroidPhoto
-              src={CLIENT_PHOTOS.photo3.src}
-              alt={hero.image_alt_text || CLIENT_PHOTOS.photo3.alt}
+              src={CLIENT_PHOTOS.maternity.src}
+              fallbackSrc={CLIENT_PHOTOS.maternity.fallbackSrc}
+              alt={hero.image_alt_text || CLIENT_PHOTOS.maternity.alt}
               caption="Natural Studio Light Portrait"
               subcaption="28 to 34 Weeks"
               tapeVariant="blush"

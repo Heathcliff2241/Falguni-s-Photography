@@ -61,8 +61,9 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({ onNavigate }) => {
 
           <div className="lg:col-span-5 flex justify-center">
             <PolaroidPhoto
-              src={CLIENT_PHOTOS.photo4.src}
-              alt={hero.image_alt_text || CLIENT_PHOTOS.photo4.alt}
+              src={CLIENT_PHOTOS.family.src}
+              fallbackSrc={CLIENT_PHOTOS.family.fallbackSrc}
+              alt={hero.image_alt_text || CLIENT_PHOTOS.family.alt}
               caption="Unhurried Family Laughter"
               subcaption="Studio & Outdoor"
               tapeVariant="kraft"

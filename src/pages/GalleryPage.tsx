@@ -13,7 +13,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
   const page = PAGES_DATA.gallery;
   const intro = page.sections[0];
 
-  const [activePhoto, setActivePhoto] = useState<{ src: string; alt: string; caption: string } | null>(null);
+  const [activePhoto, setActivePhoto] = useState<{ src: string; fallbackSrc?: string; alt: string; caption: string } | null>(null);
 
   const galleryItems = [
     {
@@ -80,6 +80,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
               <div className="relative w-full flex justify-center">
                 <PolaroidPhoto
                   src={item.src}
+                  fallbackSrc={item.fallbackSrc}
                   alt={item.alt}
                   caption={item.caption}
                   subcaption={item.category}
@@ -129,6 +130,11 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
               src={activePhoto.src}
               alt={activePhoto.alt}
               referrerPolicy="no-referrer"
+              onError={(e) => {
+                if (activePhoto.fallbackSrc && e.currentTarget.src !== activePhoto.fallbackSrc) {
+                  e.currentTarget.src = activePhoto.fallbackSrc;
+                }
+              }}
               className="max-h-[75vh] w-auto mx-auto object-contain rounded-[14px]"
             />
 

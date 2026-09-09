@@ -1,3 +1,8 @@
+import localNewborn from './client_photo_newborn_swaddle_1788924334448.jpg';
+import localNewbornCurled from './client_photo_newborn_curled_1788924347369.jpg';
+import localMaternity from './client_photo_maternity_light_1788924358207.jpg';
+import localFamily from './client_photo_family_candid_1788924370293.jpg';
+
 // Direct client photography URLs provided by Falguni's Photography
 export const NEWBORN_PHOTO_URL =
   'https://scontent.fceb1-3.fna.fbcdn.net/v/t39.30808-6/778566521_1045072271654981_1063993152270163825_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x1486&ctp=s2048x1486&_nc_cat=104&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHvo3YV9MoyC7FmaDrh5rhdg3EFzcSX9PuDcQXNxJf0-6pmO1MCcIB07nneOVdYHgI4ADpArHriN4UPJg56s7nx&_nc_ohc=p8exBQ7BFhEQ7kNvwHvpJNm&_nc_oc=AdoXzSRfZ0c2oDiItwz-t63tmgXBjUWRtTMrXcdagFr9DNM6L_Gd73HXEx0KyX99luQ&_nc_pt=1&_nc_zt=23&_nc_ht=scontent.fceb1-3.fna&_nc_gid=XplCYh4ZFzhD_DGAWiu1Jw&_nc_ss=7b2a8&oh=00_AQI7mSv175ytwGqoXRAJpP6tGlBj3lM0NKbYBcPs6SM7VQ&oe=6AA6A366';
@@ -30,24 +35,28 @@ export const CLIENT_PHOTOS = {
   // Primary session photography
   newborn: {
     src: NEWBORN_PHOTO_URL,
+    fallbackSrc: localNewborn,
     alt: "Newborn baby resting peacefully in a gentle, warm studio pose by Falguni's Photography in Adelaide",
     caption: "Unhurried Newborn Session",
     sessionType: "Newborn Photography"
   },
   maternity: {
     src: MATERNITY_PHOTO_URL,
+    fallbackSrc: localMaternity,
     alt: "Expecting mother captured in soft, natural studio light during a maternity photography session in Adelaide",
     caption: "Maternity Bump in Studio Light",
     sessionType: "Maternity Photography"
   },
   family: {
     src: FAMILY_PHOTO_URL,
+    fallbackSrc: localFamily,
     alt: "Family portrait session captured with warm natural connection and unhurried smiles by Falguni's Photography",
     caption: "Natural Family Connection",
     sessionType: "Family Photography"
   },
   cakeSmash: {
     src: CAKE_SMASH_PHOTO_URL,
+    fallbackSrc: localNewbornCurled,
     alt: "Baby celebrating first birthday milestone with cake smash photoshoot at Falguni's Photography home studio",
     caption: "First Birthday Cake Smash",
     sessionType: "Cake Smash Photography"
