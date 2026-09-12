@@ -6,27 +6,66 @@ import { LoadingScreen } from './components/LoadingScreen';
 import { WillowAssistant } from './components/WillowAssistant';
 
 import { HomePage } from './pages/HomePage';
-import { NewbornPage } from './pages/NewbornPage';
-import { MaternityPage } from './pages/MaternityPage';
-import { FamilyPage } from './pages/FamilyPage';
-import { CakeSmashPage } from './pages/CakeSmashPage';
-import { AboutPage } from './pages/AboutPage';
-import { GalleryPage } from './pages/GalleryPage';
-import { ContactPage } from './pages/ContactPage';
 import { AdminPage } from './pages/AdminPage';
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState<string>('/');
   const [showLoading, setShowLoading] = useState<boolean>(true);
 
-  // Initialize and handle browser back/forward navigation
+  // Initialize and handle browser back/forward navigation and URL redirection to single page sections
   useEffect(() => {
     const normalizePath = (p: string) => {
       const trimmed = p.replace(/\/$/, '');
       return trimmed === '' ? '/' : trimmed;
     };
 
-    setCurrentPath(normalizePath(window.location.pathname));
+    const path = normalizePath(window.location.pathname);
+
+    // Map legacy multi-page URLs to single-page anchor sections
+    const sectionRedirectMap: Record<string, string> = {
+      '/services/newborn-photography': 'sessions',
+      '/services/maternity-photography': 'sessions',
+      '/services/family-photography': 'sessions',
+      '/services/cake-smash-photography': 'sessions',
+      '/about': 'about',
+      '/gallery': 'gallery',
+      '/contact': 'contact',
+      '/reviews': 'reviews',
+      '/pricing': 'pricing',
+      '/faq': 'faq'
+    };
+
+    if (sectionRedirectMap[path]) {
+      const targetAnchor = sectionRedirectMap[path];
+      window.history.replaceState({}, '', `/#${targetAnchor}`);
+      setCurrentPath('/');
+      setTimeout(() => {
+        const el = document.getElementById(targetAnchor);
+        if (el) {
+          const navOffset = 80;
+          const elementPosition = el.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - navOffset;
+          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        }
+      }, 300);
+      return;
+    }
+
+    // Check if initial load had a hash
+    if (window.location.hash) {
+      const hash = window.location.hash.replace('#', '');
+      setTimeout(() => {
+        const el = document.getElementById(hash);
+        if (el) {
+          const navOffset = 80;
+          const elementPosition = el.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - navOffset;
+          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        }
+      }, 300);
+    }
+
+    setCurrentPath(path);
 
     const handlePopState = () => {
       setCurrentPath(normalizePath(window.location.pathname));
@@ -36,48 +75,14 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Sync document title and meta description to exact route
+  // Sync document title and meta description
   useEffect(() => {
-    let title = "Newborn Photographer in Lightsview, Adelaide | Falguni's";
-    let desc = "Unhurried newborn, maternity, family and cake smash photography from a home studio in Lightsview, Adelaide. Sessions from $300. Book your date today.";
+    let title = PAGES_DATA.home.meta_title;
+    let desc = PAGES_DATA.home.meta_description;
 
-    switch (currentPath) {
-      case '/services/newborn-photography':
-        title = PAGES_DATA.newborn.meta_title;
-        desc = PAGES_DATA.newborn.meta_description;
-        break;
-      case '/services/maternity-photography':
-        title = PAGES_DATA.maternity.meta_title;
-        desc = PAGES_DATA.maternity.meta_description;
-        break;
-      case '/services/family-photography':
-        title = PAGES_DATA.family.meta_title;
-        desc = PAGES_DATA.family.meta_description;
-        break;
-      case '/services/cake-smash-photography':
-        title = PAGES_DATA.cakeSmash.meta_title;
-        desc = PAGES_DATA.cakeSmash.meta_description;
-        break;
-      case '/about':
-        title = PAGES_DATA.about.meta_title;
-        desc = PAGES_DATA.about.meta_description;
-        break;
-      case '/gallery':
-        title = PAGES_DATA.gallery.meta_title;
-        desc = PAGES_DATA.gallery.meta_description;
-        break;
-      case '/contact':
-        title = PAGES_DATA.contact.meta_title;
-        desc = PAGES_DATA.contact.meta_description;
-        break;
-      case '/admin':
-        title = "Studio Inquiries & Transcripts | Falguni's Photography";
-        desc = "Private admin portal for Falguni's Photography.";
-        break;
-      default:
-        title = PAGES_DATA.home.meta_title;
-        desc = PAGES_DATA.home.meta_description;
-        break;
+    if (currentPath === '/admin') {
+      title = "Studio Inquiries & Transcripts | Falguni's Photography";
+      desc = "Private admin portal for Falguni's Photography.";
     }
 
     document.title = title;
@@ -96,27 +101,10 @@ export default function App() {
   };
 
   const renderCurrentPage = () => {
-    switch (currentPath) {
-      case '/services/newborn-photography':
-        return <NewbornPage onNavigate={navigateTo} />;
-      case '/services/maternity-photography':
-        return <MaternityPage onNavigate={navigateTo} />;
-      case '/services/family-photography':
-        return <FamilyPage onNavigate={navigateTo} />;
-      case '/services/cake-smash-photography':
-        return <CakeSmashPage onNavigate={navigateTo} />;
-      case '/about':
-        return <AboutPage onNavigate={navigateTo} />;
-      case '/gallery':
-        return <GalleryPage onNavigate={navigateTo} />;
-      case '/contact':
-        return <ContactPage onNavigate={navigateTo} />;
-      case '/admin':
-        return <AdminPage onNavigate={navigateTo} />;
-      case '/':
-      default:
-        return <HomePage onNavigate={navigateTo} />;
+    if (currentPath === '/admin') {
+      return <AdminPage onNavigate={navigateTo} />;
     }
+    return <HomePage onNavigate={navigateTo} />;
   };
 
   return (
@@ -126,10 +114,10 @@ export default function App() {
         <LoadingScreen onComplete={() => setShowLoading(false)} />
       )}
 
-      {/* Boutique Navigation Bar */}
+      {/* Boutique Navigation Bar with single-page smooth scrolling */}
       <Navbar currentPath={currentPath} onNavigate={navigateTo} />
 
-      {/* Main Siloed Page Content */}
+      {/* Single-Page Landing Page Content */}
       <main className="flex-1">
         {renderCurrentPage()}
       </main>

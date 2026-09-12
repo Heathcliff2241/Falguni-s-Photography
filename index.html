@@ -26,36 +26,166 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Mulish:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
-    <!-- Schema.org Structured Data -->
+    <link rel="canonical" href="https://falguniphotography.com.au/" />
+
+    <!-- Schema.org Multi-Entity Structured Data for Single-Page Local SEO -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "ProfessionalService",
-      "name": "Falguni's Photography",
-      "description": "Unhurried newborn, maternity, family and cake smash photography from a home studio in Lightsview, Adelaide. Sessions from $300.",
-      "telephone": "+61 469 753 238",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "26 South Pkwy",
-        "addressLocality": "Northfield",
-        "addressRegion": "SA",
-        "postalCode": "5085",
-        "addressCountry": "AU"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "-34.8601",
-        "longitude": "138.6186"
-      },
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-        ],
-        "opens": "09:00",
-        "closes": "18:00"
-      },
-      "priceRange": "$300+"
+      "@graph": [
+        {
+          "@type": "ProfessionalService",
+          "@id": "https://falguniphotography.com.au/#business",
+          "name": "Falguni's Photography",
+          "url": "https://falguniphotography.com.au/",
+          "logo": "https://falguniphotography.com.au/og-image.png",
+          "image": "https://falguniphotography.com.au/og-image.png",
+          "description": "Unhurried newborn, maternity, family and cake smash photography from a warm home studio in Lightsview, Adelaide. Sessions from $300.",
+          "telephone": "+61 469 753 238",
+          "priceRange": "$300+",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "26 South Pkwy",
+            "addressLocality": "Northfield",
+            "addressRegion": "SA",
+            "postalCode": "5085",
+            "addressCountry": "AU"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "-34.8601",
+            "longitude": "138.6186"
+          },
+          "areaServed": [
+            { "@type": "City", "name": "Adelaide" },
+            { "@type": "AdministrativeArea", "name": "Lightsview" },
+            { "@type": "AdministrativeArea", "name": "Northfield" },
+            { "@type": "AdministrativeArea", "name": "Clearview" },
+            { "@type": "AdministrativeArea", "name": "Greenacres" },
+            { "@type": "AdministrativeArea", "name": "Walkerville" },
+            { "@type": "AdministrativeArea", "name": "Prospect" }
+          ],
+          "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+              "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+            ],
+            "opens": "09:00",
+            "closes": "18:00"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5.0",
+            "reviewCount": "60",
+            "bestRating": "5",
+            "worstRating": "1"
+          },
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Photography Sessions",
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Newborn Photography Session",
+                  "description": "Two-hour unhurried newborn photography session in Lightsview home studio. Two wrap outfits and feeding breaks included.",
+                  "offers": {
+                    "@type": "Offer",
+                    "price": "300",
+                    "priceCurrency": "AUD"
+                  }
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Maternity Photography Session",
+                  "description": "Studio lighting maternity portrait session celebrating pregnancy between 28 to 34 weeks.",
+                  "offers": {
+                    "@type": "Offer",
+                    "price": "300",
+                    "priceCurrency": "AUD"
+                  }
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Family Photography Session",
+                  "description": "Unhurried family portrait photography in studio or outdoor park setting.",
+                  "offers": {
+                    "@type": "Offer",
+                    "price": "300",
+                    "priceCurrency": "AUD"
+                  }
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Cake Smash Photography Session",
+                  "description": "First birthday milestone photoshoot with portrait session, cake smash, and warm bubble bath splash.",
+                  "offers": {
+                    "@type": "Offer",
+                    "price": "300",
+                    "priceCurrency": "AUD"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://falguniphotography.com.au/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "When is the best time to book a newborn session?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The ideal window is between 5 and 20 days old, when newborns naturally sleep deeply and curl into gentle poses. We recommend holding your estimated due date during your second or third trimester; once your baby arrives, we confirm the exact session day."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What happens if my baby cries or needs feeding during the shoot?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Every newborn session runs for a generous two hours specifically so there is never any rush. If baby needs a feed, nappy change, or cuddle, we stop completely and let baby settle at their own pace."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are newborn wraps, outfits, and props provided?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, Falguni provides soft organic wraps, knit outfits, headbands, and sanitized props in the studio. You don't need to bring anything other than standard baby essentials (nappies and milk)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How much are sessions and are there any hidden fees?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "All studio sessions start at $300 all-inclusive, which covers the session time, styling, props, and professionally edited high-resolution digital images with full personal print rights. There are no surprise viewing room fees."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can parents and siblings participate in newborn shoots?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, parent and sibling portraits are warmly welcomed during every newborn session at no extra charge."
+              }
+            }
+          ]
+        }
+      ]
     }
     </script>
   </head>

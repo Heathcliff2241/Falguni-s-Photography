@@ -7,19 +7,42 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+  const scrollToAnchor = (targetId: string) => {
+    const el = document.getElementById(targetId);
+    if (el) {
+      const navOffset = 80;
+      const elementPosition = el.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navOffset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    } else {
+      onNavigate('/');
+      setTimeout(() => {
+        const target = document.getElementById(targetId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 150);
+    }
+  };
+
   const serviceLinks = [
-    { label: 'Newborn Photography', path: '/services/newborn-photography' },
-    { label: 'Maternity Photography', path: '/services/maternity-photography' },
-    { label: 'Family & Sitter Photography', path: '/services/family-photography' },
-    { label: 'Cake Smash Photography', path: '/services/cake-smash-photography' },
+    { label: 'Newborn Photography', targetId: 'sessions' },
+    { label: 'Maternity Photography', targetId: 'sessions' },
+    { label: 'Family & Sitter Photography', targetId: 'sessions' },
+    { label: 'Cake Smash Photography', targetId: 'sessions' },
   ];
 
   const quickLinks = [
-    { label: 'Home', path: '/' },
-    { label: 'Client Reviews (5.0 Stars)', path: '/reviews' },
-    { label: 'About Falguni', path: '/about' },
-    { label: 'Real Photo Gallery', path: '/gallery' },
-    { label: 'Book Your Session', path: '/contact' },
+    { label: 'Home Studio', targetId: 'hero' },
+    { label: 'Meet Falguni', targetId: 'about' },
+    { label: 'Photo Gallery', targetId: 'gallery' },
+    { label: 'Pricing & Inclusions', targetId: 'pricing' },
+    { label: 'Parent Reviews (5.0 Stars)', targetId: 'reviews' },
+    { label: 'Questions & Answers', targetId: 'faq' },
+    { label: 'Book Studio Time', targetId: 'contact' },
   ];
 
   return (
@@ -46,14 +69,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               Sessions
             </h4>
             <ul className="space-y-2.5 text-sm">
-              {serviceLinks.map((link) => (
-                <li key={link.path}>
+              {serviceLinks.map((link, idx) => (
+                <li key={idx}>
                   <button
-                    onClick={() => {
-                      onNavigate(link.path);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className="text-[#362E2B]/80 hover:text-[#6E4E53] transition-colors text-left"
+                    onClick={() => scrollToAnchor(link.targetId)}
+                    className="text-[#362E2B]/80 hover:text-[#6E4E53] transition-colors text-left cursor-pointer"
                   >
                     {link.label}
                   </button>
@@ -65,30 +85,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Col 3: Studio & Navigation */}
           <div>
             <h4 className="caption-text text-[#6E4E53] font-semibold mb-4">
-              Information
+              Explore
             </h4>
             <ul className="space-y-2.5 text-sm">
-              {quickLinks.map((link) => (
-                <li key={link.path}>
+              {quickLinks.map((link, idx) => (
+                <li key={idx}>
                   <button
-                    onClick={() => {
-                      if (link.path === '/reviews') {
-                        const el = document.getElementById('reviews-section') || document.getElementById('reviews');
-                        if (el) {
-                          el.scrollIntoView({ behavior: 'smooth' });
-                          return;
-                        }
-                        onNavigate('/');
-                        setTimeout(() => {
-                          const target = document.getElementById('reviews-section') || document.getElementById('reviews');
-                          if (target) target.scrollIntoView({ behavior: 'smooth' });
-                        }, 150);
-                        return;
-                      }
-                      onNavigate(link.path);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className="text-[#362E2B]/80 hover:text-[#6E4E53] transition-colors text-left"
+                    onClick={() => scrollToAnchor(link.targetId)}
+                    className="text-[#362E2B]/80 hover:text-[#6E4E53] transition-colors text-left cursor-pointer"
                   >
                     {link.label}
                   </button>
@@ -132,7 +136,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 onNavigate('/admin');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="text-[#9CAA8C] hover:text-[#6E4E53] flex items-center gap-1 transition-colors"
+              className="text-[#9CAA8C] hover:text-[#6E4E53] flex items-center gap-1 transition-colors cursor-pointer"
               title="Studio Admin Portal"
             >
               <ShieldCheck size={14} weight="light" />

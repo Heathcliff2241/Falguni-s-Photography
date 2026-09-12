@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { List, X, Phone, CalendarCheck, CaretDown } from '@phosphor-icons/react';
+import React, { useState, useEffect } from 'react';
+import { List, X, Phone, CalendarCheck } from '@phosphor-icons/react';
 import { STUDIO_INFO } from '../data/siteData';
 
 interface NavbarProps {
@@ -9,90 +9,77 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [desktopServicesOpen, setDesktopServicesOpen] = useState(false);
-  const [mobileServicesOpen, setMobileServicesOpen] = useState(
-    currentPath.startsWith('/services/')
-  );
+  const [activeSection, setActiveSection] = useState<string>('hero');
 
-  const servicesDropdownRef = useRef<HTMLDivElement>(null);
-
-  const servicesList = [
-    {
-      label: 'Newborn Photography',
-      sublabel: '5 to 20 days · 2 hours unhurried',
-      path: '/services/newborn-photography',
-    },
-    {
-      label: 'Maternity Photography',
-      sublabel: '28 to 34 weeks · Studio light',
-      path: '/services/maternity-photography',
-    },
-    {
-      label: 'Family Photography',
-      sublabel: 'Studio or outdoor · Up to 5 people',
-      path: '/services/family-photography',
-    },
-    {
-      label: 'Cake Smash Photography',
-      sublabel: 'First birthday milestone · Full cleanup',
-      path: '/services/cake-smash-photography',
-    },
+  const navLinks = [
+    { label: 'Studio', targetId: 'about' },
+    { label: 'Sessions', targetId: 'sessions' },
+    { label: 'Gallery', targetId: 'gallery' },
+    { label: 'Pricing', targetId: 'pricing' },
+    { label: 'Reviews', targetId: 'reviews' },
+    { label: 'FAQ', targetId: 'faq' },
+    { label: 'Contact', targetId: 'contact' },
   ];
 
-  // Close desktop dropdown on outside click or Escape
+  // Scroll spy to highlight current active section
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        servicesDropdownRef.current &&
-        !servicesDropdownRef.current.contains(e.target as Node)
-      ) {
-        setDesktopServicesOpen(false);
-      }
-    };
+    if (currentPath !== '/') return;
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setDesktopServicesOpen(false);
-      }
-    };
+    const sectionIds = ['hero', 'about', 'sessions', 'gallery', 'pricing', 'reviews', 'faq', 'contact'];
+    
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 140; // Offset for navbar height
 
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
-
-  const handleNavClick = (path: string) => {
-    if (path === '/reviews' || path === '#reviews') {
-      if (currentPath === '/') {
-        const el = document.getElementById('reviews-section') || document.getElementById('reviews');
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
-          setMobileMenuOpen(false);
-          setDesktopServicesOpen(false);
-          return;
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const id = sectionIds[i];
+        const element = document.getElementById(id);
+        if (element) {
+          const top = element.offsetTop;
+          if (scrollPosition >= top) {
+            setActiveSection(id);
+            break;
+          }
         }
       }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [currentPath]);
+
+  const scrollToSection = (targetId: string) => {
+    setMobileMenuOpen(false);
+
+    if (currentPath !== '/') {
       onNavigate('/');
       setTimeout(() => {
-        const el = document.getElementById('reviews-section') || document.getElementById('reviews');
+        const el = document.getElementById(targetId);
         if (el) {
           el.scrollIntoView({ behavior: 'smooth' });
         }
       }, 150);
-      setMobileMenuOpen(false);
-      setDesktopServicesOpen(false);
       return;
     }
-    onNavigate(path);
-    setMobileMenuOpen(false);
-    setDesktopServicesOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
-  const isServicesActive = currentPath.startsWith('/services/');
+    if (targetId === 'hero') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const el = document.getElementById(targetId);
+    if (el) {
+      const navOffset = 80;
+      const elementPosition = el.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   return (
     <header className="sticky top-0 z-40 bg-[#FAF5EF]/95 backdrop-blur-sm border-b border-[#EAD3CE]/50 transition-colors">
@@ -113,8 +100,9 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
       <div className="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
         {/* Brand logo */}
         <button
-          onClick={() => handleNavClick('/')}
+          onClick={() => scrollToSection('hero')}
           className="text-left group cursor-pointer focus:outline-none"
+          aria-label="Falguni's Photography Home"
         >
           <span className="block font-display text-2xl lg:text-3xl text-[#362E2B] font-normal tracking-tight group-hover:text-[#6E4E53] transition-colors">
             Falguni&apos;s Photography
@@ -124,262 +112,76 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
           </span>
         </button>
 
-        {/* Desktop Navigation with Collapsible Services Dropdown */}
-        <nav className="hidden lg:flex items-center gap-7 text-[14px]">
-          <button
-            onClick={() => handleNavClick('/')}
-            className={`transition-colors py-1 cursor-pointer relative focus:outline-none ${
-              currentPath === '/' 
-                ? 'text-[#6E4E53] font-medium' 
-                : 'text-[#362E2B]/80 hover:text-[#6E4E53]'
-            }`}
-          >
-            Home
-            {currentPath === '/' && (
-              <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#9CAA8C]" />
-            )}
-          </button>
-
-          {/* Collapsible Services Menu */}
-          <div
-            ref={servicesDropdownRef}
-            className="relative"
-            onMouseEnter={() => setDesktopServicesOpen(true)}
-            onMouseLeave={() => setDesktopServicesOpen(false)}
-          >
-            <button
-              onClick={() => setDesktopServicesOpen((prev) => !prev)}
-              aria-expanded={desktopServicesOpen}
-              className={`flex items-center gap-1.5 py-1 cursor-pointer transition-colors focus:outline-none ${
-                isServicesActive || desktopServicesOpen
-                  ? 'text-[#6E4E53] font-medium'
-                  : 'text-[#362E2B]/80 hover:text-[#6E4E53]'
-              }`}
-            >
-              <span>Services</span>
-              <CaretDown
-                size={14}
-                weight="bold"
-                className={`transition-transform duration-200 ${
-                  desktopServicesOpen ? 'rotate-180 text-[#6E4E53]' : 'text-[#9CAA8C]'
+        {/* Desktop Anchor Navigation with Active Scroll-Spy */}
+        <nav className="hidden lg:flex items-center gap-6 text-[14px]">
+          {navLinks.map((link) => {
+            const isActive = currentPath === '/' && activeSection === link.targetId;
+            return (
+              <button
+                key={link.targetId}
+                onClick={() => scrollToSection(link.targetId)}
+                className={`transition-colors py-1 cursor-pointer relative focus:outline-none ${
+                  isActive 
+                    ? 'text-[#6E4E53] font-medium' 
+                    : 'text-[#362E2B]/80 hover:text-[#6E4E53]'
                 }`}
-              />
-              {isServicesActive && (
-                <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#9CAA8C]" />
-              )}
-            </button>
-
-            {/* Desktop Dropdown Panel */}
-            {desktopServicesOpen && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50 w-72">
-                <div className="bg-[#FAF5EF] border border-[#EAD3CE] rounded-[16px] shadow-[0_12px_32px_-6px_rgba(54,46,43,0.16)] p-2 backdrop-blur-md">
-                  <div className="px-3 py-2 border-b border-[#EAD3CE]/40 mb-1">
-                    <span className="text-[10px] uppercase tracking-wider font-semibold text-[#9CAA8C]">
-                      Studio Sessions
-                    </span>
-                  </div>
-
-                  {servicesList.map((service) => {
-                    const isSelected = currentPath === service.path;
-                    return (
-                      <button
-                        key={service.path}
-                        onClick={() => handleNavClick(service.path)}
-                        className={`w-full text-left p-2.5 rounded-xl transition-colors group flex flex-col ${
-                          isSelected
-                            ? 'bg-[#EAD3CE]/40 text-[#6E4E53]'
-                            : 'hover:bg-[#EAD3CE]/20 text-[#362E2B]'
-                        }`}
-                      >
-                        <span className="font-display text-base group-hover:text-[#6E4E53] font-medium leading-snug">
-                          {service.label}
-                        </span>
-                        <span className="text-[11px] text-[#362E2B]/60 group-hover:text-[#362E2B]/80">
-                          {service.sublabel}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <button
-            onClick={() => handleNavClick('/about')}
-            className={`transition-colors py-1 cursor-pointer relative focus:outline-none ${
-              currentPath === '/about' 
-                ? 'text-[#6E4E53] font-medium' 
-                : 'text-[#362E2B]/80 hover:text-[#6E4E53]'
-            }`}
-          >
-            About
-            {currentPath === '/about' && (
-              <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#9CAA8C]" />
-            )}
-          </button>
-
-          <button
-            onClick={() => handleNavClick('/gallery')}
-            className={`transition-colors py-1 cursor-pointer relative focus:outline-none ${
-              currentPath === '/gallery' 
-                ? 'text-[#6E4E53] font-medium' 
-                : 'text-[#362E2B]/80 hover:text-[#6E4E53]'
-            }`}
-          >
-            Gallery
-            {currentPath === '/gallery' && (
-              <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#9CAA8C]" />
-            )}
-          </button>
-
-          <button
-            onClick={() => handleNavClick('/reviews')}
-            className="transition-colors py-1 cursor-pointer relative focus:outline-none text-[#362E2B]/80 hover:text-[#6E4E53]"
-          >
-            Reviews
-          </button>
-
-          <button
-            onClick={() => handleNavClick('/contact')}
-            className={`transition-colors py-1 cursor-pointer relative focus:outline-none ${
-              currentPath === '/contact' 
-                ? 'text-[#6E4E53] font-medium' 
-                : 'text-[#362E2B]/80 hover:text-[#6E4E53]'
-            }`}
-          >
-            Contact
-            {currentPath === '/contact' && (
-              <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#9CAA8C]" />
-            )}
-          </button>
+              >
+                {link.label}
+                {isActive && (
+                  <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#9CAA8C]" />
+                )}
+              </button>
+            );
+          })}
         </nav>
 
         {/* Right CTA */}
         <div className="hidden sm:flex items-center gap-4">
           <button
-            onClick={() => handleNavClick('/contact')}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#6E4E53] text-[#FAF5EF] text-sm hover:bg-[#583D42] transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#9CAA8C]"
+            onClick={() => scrollToSection('contact')}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#6E4E53] text-[#FAF5EF] text-sm hover:bg-[#583D42] transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#9CAA8C] cursor-pointer"
           >
             <CalendarCheck size={16} weight="light" />
             <span>Book Session</span>
           </button>
         </div>
 
-        {/* Mobile menu button */}
+        {/* Mobile menu toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2 text-[#362E2B] hover:text-[#6E4E53] focus:outline-none"
+          className="lg:hidden p-2 text-[#362E2B] hover:text-[#6E4E53] focus:outline-none cursor-pointer"
           aria-label={mobileMenuOpen ? 'Close Menu' : 'Open Menu'}
         >
           {mobileMenuOpen ? <X size={26} weight="light" /> : <List size={26} weight="light" />}
         </button>
       </div>
 
-      {/* Mobile Drawer with Collapsible Services Accordion */}
+      {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#FAF5EF] border-b border-[#EAD3CE] px-6 py-6 shadow-lg">
-          <nav className="flex flex-col gap-3">
-            <button
-              onClick={() => handleNavClick('/')}
-              className={`text-left py-2 text-base transition-colors flex items-center justify-between ${
-                currentPath === '/' 
-                  ? 'text-[#6E4E53] font-medium pl-2 border-l-2 border-[#9CAA8C]' 
-                  : 'text-[#362E2B]/80 hover:text-[#6E4E53]'
-              }`}
-            >
-              <span>Home</span>
-              {currentPath === '/' && <span className="text-xs text-[#9CAA8C] uppercase tracking-wider">Current</span>}
-            </button>
-
-            {/* Collapsible Services Accordion in Mobile */}
-            <div className="border-y border-[#EAD3CE]/50 py-1">
-              <button
-                onClick={() => setMobileServicesOpen((prev) => !prev)}
-                className={`w-full py-2.5 text-left text-base font-medium flex items-center justify-between transition-colors ${
-                  isServicesActive ? 'text-[#6E4E53]' : 'text-[#362E2B]/90'
-                }`}
-              >
-                <span>Services</span>
-                <CaretDown
-                  size={16}
-                  weight="bold"
-                  className={`text-[#9CAA8C] transition-transform duration-200 ${
-                    mobileServicesOpen ? 'rotate-180 text-[#6E4E53]' : ''
+        <div className="lg:hidden bg-[#FAF5EF] border-b border-[#EAD3CE] px-6 py-6 shadow-lg animate-in fade-in duration-200">
+          <nav className="flex flex-col gap-2">
+            {navLinks.map((link) => {
+              const isActive = currentPath === '/' && activeSection === link.targetId;
+              return (
+                <button
+                  key={link.targetId}
+                  onClick={() => scrollToSection(link.targetId)}
+                  className={`text-left py-2.5 text-base transition-colors flex items-center justify-between cursor-pointer ${
+                    isActive 
+                      ? 'text-[#6E4E53] font-medium pl-2 border-l-2 border-[#9CAA8C]' 
+                      : 'text-[#362E2B]/80 hover:text-[#6E4E53]'
                   }`}
-                />
-              </button>
-
-              {mobileServicesOpen && (
-                <div className="pl-3 py-1 space-y-2 border-l-2 border-[#9CAA8C]/50 my-1 ml-1">
-                  {servicesList.map((service) => {
-                    const isSelected = currentPath === service.path;
-                    return (
-                      <button
-                        key={service.path}
-                        onClick={() => handleNavClick(service.path)}
-                        className={`w-full text-left py-1.5 px-2 rounded-lg text-sm transition-colors block ${
-                          isSelected
-                            ? 'text-[#6E4E53] font-medium bg-[#EAD3CE]/30'
-                            : 'text-[#362E2B]/80 hover:text-[#6E4E53]'
-                        }`}
-                      >
-                        <span className="block font-medium">{service.label}</span>
-                        <span className="block text-[11px] text-[#362E2B]/60">{service.sublabel}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            <button
-              onClick={() => handleNavClick('/about')}
-              className={`text-left py-2 text-base transition-colors flex items-center justify-between ${
-                currentPath === '/about' 
-                  ? 'text-[#6E4E53] font-medium pl-2 border-l-2 border-[#9CAA8C]' 
-                  : 'text-[#362E2B]/80 hover:text-[#6E4E53]'
-              }`}
-            >
-              <span>About</span>
-              {currentPath === '/about' && <span className="text-xs text-[#9CAA8C] uppercase tracking-wider">Current</span>}
-            </button>
-
-            <button
-              onClick={() => handleNavClick('/gallery')}
-              className={`text-left py-2 text-base transition-colors flex items-center justify-between ${
-                currentPath === '/gallery' 
-                  ? 'text-[#6E4E53] font-medium pl-2 border-l-2 border-[#9CAA8C]' 
-                  : 'text-[#362E2B]/80 hover:text-[#6E4E53]'
-              }`}
-            >
-              <span>Gallery</span>
-              {currentPath === '/gallery' && <span className="text-xs text-[#9CAA8C] uppercase tracking-wider">Current</span>}
-            </button>
-
-            <button
-              onClick={() => handleNavClick('/reviews')}
-              className="text-left py-2 text-base transition-colors flex items-center justify-between text-[#362E2B]/80 hover:text-[#6E4E53]"
-            >
-              <span>Client Reviews (5.0 Stars)</span>
-            </button>
-
-            <button
-              onClick={() => handleNavClick('/contact')}
-              className={`text-left py-2 text-base transition-colors flex items-center justify-between ${
-                currentPath === '/contact' 
-                  ? 'text-[#6E4E53] font-medium pl-2 border-l-2 border-[#9CAA8C]' 
-                  : 'text-[#362E2B]/80 hover:text-[#6E4E53]'
-              }`}
-            >
-              <span>Contact</span>
-              {currentPath === '/contact' && <span className="text-xs text-[#9CAA8C] uppercase tracking-wider">Current</span>}
-            </button>
+                >
+                  <span>{link.label}</span>
+                  {isActive && <span className="text-xs text-[#9CAA8C] uppercase tracking-wider">Viewing</span>}
+                </button>
+              );
+            })}
 
             <div className="pt-4 mt-2 border-t border-[#EAD3CE] flex flex-col gap-3">
               <button
-                onClick={() => handleNavClick('/contact')}
-                className="w-full py-3 text-center rounded-full bg-[#6E4E53] text-[#FAF5EF] text-sm hover:bg-[#583D42] transition-colors"
+                onClick={() => scrollToSection('contact')}
+                className="w-full py-3 text-center rounded-full bg-[#6E4E53] text-[#FAF5EF] text-sm hover:bg-[#583D42] transition-colors cursor-pointer"
               >
                 Book a Session
               </button>
