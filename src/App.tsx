@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { PAGES_DATA } from './data/siteData';
+import { Phone } from '@phosphor-icons/react';
+import { PAGES_DATA, STUDIO_INFO } from './data/siteData';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { LoadingScreen } from './components/LoadingScreen';
-import { WillowAssistant } from './components/WillowAssistant';
+// import { WillowAssistant } from './components/WillowAssistant';
 
 import { HomePage } from './pages/HomePage';
 import { AdminPage } from './pages/AdminPage';
@@ -122,11 +123,31 @@ export default function App() {
         {renderCurrentPage()}
       </main>
 
-      {/* Boutique Studio Footer with NAP & Local SEO data */}
+      {/* Boutique Studio Footer with Embedded Map, NAP & Local SEO data */}
       <Footer onNavigate={navigateTo} />
 
-      {/* Functional Willow AI Assistant widget */}
-      <WillowAssistant />
+      {/* AI Chatbot commented out as requested */}
+      {/* <WillowAssistant /> */}
+
+      {/* Floating Call Icon for Falguni's Direct Studio Phone Number */}
+      <a
+        href={`tel:${STUDIO_INFO.phone.replace(/\s+/g, '')}`}
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 sm:px-5 py-3.5 bg-[#6E4E53] text-[#FAF5EF] rounded-full shadow-[0_8px_24px_rgba(110,78,83,0.35)] hover:bg-[#583D42] hover:shadow-[0_12px_28px_rgba(110,78,83,0.45)] hover:scale-105 active:scale-95 transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-[#9CAA8C]"
+        aria-label="Call Falguni's Photography directly"
+        title={`Call Falguni directly: ${STUDIO_INFO.phoneDisplay}`}
+      >
+        <span className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-[#FAF5EF] group-hover:rotate-12 transition-transform duration-200">
+          <Phone size={18} weight="fill" />
+        </span>
+        <div className="text-left">
+          <span className="block text-[10px] text-[#EAD3CE] font-semibold uppercase tracking-wider leading-none">
+            Direct Line
+          </span>
+          <span className="block text-xs sm:text-sm font-medium tracking-wide leading-tight">
+            Call Falguni
+          </span>
+        </div>
+      </a>
     </div>
   );
 }

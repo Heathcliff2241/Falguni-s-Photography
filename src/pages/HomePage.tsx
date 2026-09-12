@@ -239,15 +239,14 @@ export const HomePage: React.FC<HomePageProps> = () => {
                   <CalendarCheck size={16} weight="bold" />
                   <span>Book with Falguni</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={handleOpenWillowBooking}
+                <a
+                  href={`tel:${STUDIO_INFO.phone.replace(/\s+/g, '')}`}
                   className="px-4 py-2.5 rounded-xl border border-[#9CAA8C] text-[#362E2B] font-medium text-xs hover:bg-[#EAD3CE]/30 transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
-                  title="Ask Willow assistant to hold your date"
+                  title={`Call Falguni directly: ${STUDIO_INFO.phoneDisplay}`}
                 >
-                  <ChatCircleDots size={16} weight="regular" className="text-[#6E4E53]" />
-                  <span>Hold via Chat</span>
-                </button>
+                  <Phone size={16} weight="regular" className="text-[#6E4E53]" />
+                  <span>Call Falguni</span>
+                </a>
               </form>
             </div>
 

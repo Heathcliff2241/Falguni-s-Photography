@@ -48,7 +48,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
     <footer className="bg-[#FAF5EF] border-t border-[#EAD3CE] text-[#362E2B] pt-16 pb-12 mt-24">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        
+        {/* Top 4-Column Directory Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Col 1: Studio Info */}
           <div className="space-y-4">
             <h3 className="font-display text-2xl text-[#362E2B]">
@@ -123,6 +125,38 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <p className="text-xs text-[#362E2B]/60 pt-2 leading-relaxed">
               Serving {STUDIO_INFO.serviceArea}.
             </p>
+          </div>
+        </div>
+
+        {/* Embedded Interactive Google Map Location Card */}
+        <div className="mb-12 rounded-[22px] overflow-hidden border border-[#EAD3CE] shadow-xs bg-white/70">
+          <div className="px-5 py-3 bg-[#FAF5EF] border-b border-[#EAD3CE] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <span className="text-xs font-semibold text-[#6E4E53] uppercase tracking-wider flex items-center gap-2">
+              <MapPin size={16} weight="fill" className="text-[#9CAA8C]" />
+              <span>Home Studio Location: 26 South Pkwy, Northfield SA 5085 (Lightsview)</span>
+            </span>
+            <a
+              href="https://maps.google.com/?q=26+South+Pkwy,+Northfield+SA+5085,+Australia"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-medium text-[#6E4E53] hover:underline flex items-center gap-1"
+            >
+              <span>Open in Google Maps</span>
+              <span>&rarr;</span>
+            </a>
+          </div>
+          <div className="w-full h-[260px] sm:h-[320px] relative bg-[#FAF5EF]">
+            <iframe
+              title="Falguni's Photography Studio Location Map"
+              src="https://maps.google.com/maps?q=26%20South%20Pkwy,%20Northfield%20SA%205085,%20Australia&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen={false}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="w-full h-full"
+            />
           </div>
         </div>
 
